@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->date('order_date');
-            $table->string('delivery');
             $table->text('order_address');
             $table->string('delivery_type');
             $table->string('delivery_name');
