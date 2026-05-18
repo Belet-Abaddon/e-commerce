@@ -13,6 +13,8 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
@@ -309,44 +311,11 @@
 
                     <!-- Payments -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200"
-                            onclick="toggleSubmenu('paymentsSubmenu')">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-credit-card w-5"></i>
-                                <span>Payments</span>
-                            </div>
-                            <i class="fas fa-chevron-right rotate-icon text-sm" id="paymentsIcon"></i>
-                        </div>
-                        <ul id="paymentsSubmenu" class="submenu ml-6 mt-1 space-y-1">
-                            <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-list w-4"></i>
-                                    <span>All Payments</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-clock w-4"></i>
-                                    <span>Pending Payments</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-check-circle w-4"></i>
-                                    <span>Completed Payments</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-exchange-alt w-4"></i>
-                                    <span>Transactions</span>
-                                </a>
-                            </li>
-                        </ul>
+                        <a href="{{ route('admin.payments.index') }}"
+                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.payments*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                            <i class="fas fa-credit-card w-5"></i>
+                            <span>Payments</span>
+                        </a>
                     </li>
 
                     <!-- Reports -->
@@ -361,42 +330,35 @@
                         </div>
                         <ul id="reportsSubmenu" class="submenu ml-6 mt-1 space-y-1">
                             <li>
-                                <a href="#"
+                                <a href="{{ route('admin.reports.sales') }}"
                                     class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-chart-bar w-4"></i>
                                     <span>Sales Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ route('admin.reports.products') }}"
                                     class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-boxes w-4"></i>
                                     <span>Products Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ route('admin.reports.customers') }}"
                                     class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-users w-4"></i>
                                     <span>Customers Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-dollar-sign w-4"></i>
-                                    <span>Revenue Report</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#"
+                                <a href="{{ route('admin.reports.inventory') }}"
                                     class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-warehouse w-4"></i>
                                     <span>Inventory Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ route('admin.reports.deliveries') }}"
                                     class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-truck w-4"></i>
                                     <span>Delivery Report</span>
@@ -665,6 +627,56 @@
         document.addEventListener('DOMContentLoaded', function () {
             openSubmenuForCurrentRoute();
         });
+
+        // Function to export report as image
+        function exportAsImage(elementId, filename) {
+            const element = document.getElementById(elementId);
+            if (!element) {
+                console.error('Element not found:', elementId);
+                return;
+            }
+
+            // Show loading indicator
+            const exportBtn = event.target;
+            const originalText = exportBtn.innerHTML;
+            exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Exporting...';
+            exportBtn.disabled = true;
+
+            html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                useCORS: true
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `${filename}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+
+                // Reset button
+                exportBtn.innerHTML = originalText;
+                exportBtn.disabled = false;
+            }).catch(error => {
+                console.error('Error exporting image:', error);
+                exportBtn.innerHTML = originalText;
+                exportBtn.disabled = false;
+                alert('Error exporting image. Please try again.');
+            });
+        }
+
+        // Function to export chart as image
+        function exportChartAsImage(chartId, filename) {
+            const canvas = document.getElementById(chartId);
+            if (!canvas) {
+                console.error('Chart not found:', chartId);
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.download = `${filename}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
     </script>
 </body>
 
