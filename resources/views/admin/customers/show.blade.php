@@ -10,6 +10,11 @@
         <a href="{{ route('admin.customers.index') }}" class="inline-flex items-center text-admin-blue hover:text-admin-light-blue">
             <i class="fas fa-arrow-left mr-2"></i> Back to Customers
         </a>
+        @if($customer->id != auth()->id())
+        <button onclick="deleteCustomer({{ $customer->id }})" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+            <i class="fas fa-trash mr-2"></i> Delete Account
+        </button>
+        @endif
     </div>
 
     <!-- Customer Information -->
@@ -54,17 +59,58 @@
                         </p>
                     </div>
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-500">Joined Date</label>
-                        <p class="mt-1 text-sm text-gray-900">{{ $customer->created_at->format('Y-m-d H:i:s') }}</p>
+                        <label class="block text-sm font-medium text-gray-500">Total Orders</label>
+                        <p class="mt-1 text-sm text-gray-900">{{ $orderCount }}</p>
                     </div>
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-500">Last Updated</label>
-                        <p class="mt-1 text-sm text-gray-900">{{ $customer->updated_at->format('Y-m-d H:i:s') }}</p>
+                        <label class="block text-sm font-medium text-gray-500">Joined Date</label>
+                        <p class="mt-1 text-sm text-gray-900">{{ $customer->created_at->format('Y-m-d H:i:s') }}</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Recent Orders -->
+    @if($customer->orders->count() > 0)
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="bg-gray-50 px-6 py-4 border-b">
+            <h3 class="font-semibold text-gray-800">Recent Orders</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Items</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($customer->orders->take(5) as $order)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            #{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                            {{ \Carbon\Carbon::parse($order->order_date)->format('Y-m-d') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                            {{ $order->qty }} items
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <a href="{{ route('admin.orders.show', $order->id) }}" class="text-admin-blue hover:text-admin-light-blue">
+                                View Order
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
 
     <!-- Change Role Section -->
     @if($customer->id != auth()->id())
@@ -91,4 +137,20 @@
     </div>
     @endif
 </div>
+
+<!-- Delete Form -->
+<form id="deleteForm" method="POST" style="display: none;">
+    @csrf
+    @method('DELETE')
+</form>
+
+<script>
+    function deleteCustomer(id) {
+        if (confirm('Are you sure you want to delete this customer account? This action cannot be undone and will delete all orders and feedback from this customer.')) {
+            const form = document.getElementById('deleteForm');
+            form.action = `/admin/customers/${id}`;
+            form.submit();
+        }
+    }
+</script>
 @endsection

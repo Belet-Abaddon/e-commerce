@@ -109,10 +109,15 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                             {{ $customer->created_at->format('Y-m-d') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                             <a href="{{ route('admin.customers.show', $customer->id) }}" class="text-admin-blue hover:text-admin-light-blue">
-                                View
+                                <i class="fas fa-eye"></i>
                             </a>
+                            @if($customer->id != auth()->id())
+                            <button onclick="deleteCustomer({{ $customer->id }})" class="text-red-600 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            @endif
                         </td>
                     </tr>
                     @empty
@@ -131,4 +136,20 @@
         </div>
     </div>
 </div>
+
+<!-- Delete Form -->
+<form id="deleteForm" method="POST" style="display: none;">
+    @csrf
+    @method('DELETE')
+</form>
+
+<script>
+    function deleteCustomer(id) {
+        if (confirm('Are you sure you want to delete this customer account? This action cannot be undone and will delete all orders and feedback from this customer.')) {
+            const form = document.getElementById('deleteForm');
+            form.action = `/admin/customers/${id}`;
+            form.submit();
+        }
+    }
+</script>
 @endsection

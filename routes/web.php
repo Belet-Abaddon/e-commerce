@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\PromotionController as AdminPromotionController;
+use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
+use App\Http\Controllers\Admin\ReportController as AdminReportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,22 +35,34 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/', [AdminCustomerController::class, 'index'])->name('index');
         Route::get('/{id}', [AdminCustomerController::class, 'show'])->name('show');
         Route::put('/{id}/role', [AdminCustomerController::class, 'updateRole'])->name('update-role');
+        Route::delete('/{id}', [AdminCustomerController::class, 'destroy'])->name('destroy');
     });
     Route::prefix('promotions')->name('promotions.')->group(function () {
-    // Promotion CRUD
-    Route::get('/', [AdminPromotionController::class, 'index'])->name('index');
-    Route::get('/create', [AdminPromotionController::class, 'create'])->name('create');
-    Route::post('/store', [AdminPromotionController::class, 'store'])->name('store');
-    Route::get('/{id}/edit', [AdminPromotionController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [AdminPromotionController::class, 'update'])->name('update');
-    Route::delete('/{id}', [AdminPromotionController::class, 'destroy'])->name('destroy');
-    
-    // Promotion Products
-    Route::get('/{promotionId}/products', [AdminPromotionController::class, 'products'])->name('products');
-    Route::post('/{promotionId}/products', [AdminPromotionController::class, 'addProduct'])->name('add-product');
-    Route::put('/{promotionId}/products/{productId}', [AdminPromotionController::class, 'updateProduct'])->name('update-product');
-    Route::delete('/{promotionId}/products/{productId}', [AdminPromotionController::class, 'deleteProduct'])->name('delete-product');
-});
+        Route::get('/', [AdminPromotionController::class, 'index'])->name('index');
+        Route::get('/create', [AdminPromotionController::class, 'create'])->name('create');
+        Route::post('/store', [AdminPromotionController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [AdminPromotionController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [AdminPromotionController::class, 'update'])->name('update');
+        Route::delete('/{id}', [AdminPromotionController::class, 'destroy'])->name('destroy');
+
+        Route::get('/{promotionId}/products', [AdminPromotionController::class, 'products'])->name('products');
+        Route::post('/{promotionId}/products', [AdminPromotionController::class, 'addProduct'])->name('add-product');
+        Route::put('/{promotionId}/products/{productId}', [AdminPromotionController::class, 'updateProduct'])->name('update-product');
+        Route::delete('/{promotionId}/products/{productId}', [AdminPromotionController::class, 'deleteProduct'])->name('delete-product');
+    });
+    Route::prefix('payments')->name('payments.')->group(function () {
+        Route::get('/', [AdminPaymentController::class, 'index'])->name('index');
+        Route::get('/{id}', [AdminPaymentController::class, 'show'])->name('show');
+        Route::delete('/{id}', [AdminPaymentController::class, 'destroy'])->name('destroy');
+    });
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/sales', [AdminReportController::class, 'sales'])->name('sales');
+        Route::get('/products', [AdminReportController::class, 'products'])->name('products');
+        Route::get('/customers', [AdminReportController::class, 'customers'])->name('customers');
+        Route::get('/revenue', [AdminReportController::class, 'revenue'])->name('revenue');
+        Route::get('/inventory', [AdminReportController::class, 'inventory'])->name('inventory');
+        Route::get('/deliveries', [AdminReportController::class, 'deliveries'])->name('deliveries');
+    });
 });
 
 require __DIR__ . '/auth.php';
