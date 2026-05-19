@@ -16,6 +16,14 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        // Check user role first and direct them to the appropriate layout wrapper file
+        if ($request->user() && $request->user()->role === 'admin') {
+            return view('profile.admin-edit', [
+                'user' => $request->user(),
+            ]);
+        }
+
+        // Default target pathway for regular storefront users using app.blade.php
         return view('profile.edit', [
             'user' => $request->user(),
         ]);
@@ -27,7 +35,7 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-        
+
         // This safely updates using only the clean validated data mapping
         $user->fill($request->validated());
 

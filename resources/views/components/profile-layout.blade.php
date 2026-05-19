@@ -1,14 +1,9 @@
-@php
-    $isAdmin = auth()->check() && auth()->user()->role === 'admin';
-@endphp
-
 @if($isAdmin)
     @extends('layouts.admin')
-    
-    @section('header', 'My Profile')
-
     @section('content')
-        {{ $slot }}
+        <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            {{ $slot }}
+        </div>
     @endsection
 @else
     <x-app-layout>
@@ -18,6 +13,8 @@
             </h2>
         </x-slot>
 
-        {{ $slot }}
+        <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            {{ $slot }}
+        </div>
     </x-app-layout>
 @endif
