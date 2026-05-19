@@ -308,9 +308,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Update individual delivery status row via asynchronous API pipeline
+
 function updateDeliveryStatus(deliveryId, status) {
-    // FIXED: Formatted method payload configurations to match standard Laravel REST structural schemas
     fetch(`/admin/deliveries/${deliveryId}/update-status`, {
         method: 'POST',
         headers: {
@@ -319,7 +318,7 @@ function updateDeliveryStatus(deliveryId, status) {
             'Accept': 'application/json'
         },
         body: JSON.stringify({ 
-            _method: 'POST', // or PUT depending on route setup mapping definitions
+            _method: 'POST',
             delivery_status: status 
         })
     })
@@ -345,7 +344,6 @@ function updateDeliveryStatus(deliveryId, status) {
     });
 }
 
-// Show dynamic routing history tracking context modal window
 function showTracking(deliveryId) {
     fetch(`/admin/deliveries/${deliveryId}/tracking`)
         .then(response => response.json())

@@ -271,7 +271,7 @@
         document.querySelectorAll('.delete-image-btn').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
-                e.stopPropagation(); // Block bubbling context up to product submission
+                e.stopPropagation(); 
 
                 const imageId = this.getAttribute('data-image-id');
                 const actionUrl = this.getAttribute('data-url');
@@ -279,18 +279,15 @@
                 if (confirm('Are you sure you want to delete this specific image?')) {
                     console.log(`Executing isolated request route for Image ID: ${imageId}`);
 
-                    // Generate temporary virtual form at safe document scope root level
                     const hiddenForm = document.createElement('form');
                     hiddenForm.method = 'POST';
                     hiddenForm.action = actionUrl;
 
-                    // Laravel Context CSRF Data Configuration Token
                     const csrfToken = document.createElement('input');
                     csrfToken.type = 'hidden';
                     csrfToken.name = '_token';
                     csrfToken.value = '{{ csrf_token() }}';
 
-                    // REST Method Spoof override directive parameter
                     const methodOverride = document.createElement('input');
                     methodOverride.type = 'hidden';
                     methodOverride.name = '_method';

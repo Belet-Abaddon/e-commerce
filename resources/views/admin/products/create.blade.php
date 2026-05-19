@@ -6,7 +6,6 @@
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <!-- IMPORTANT: Make sure enctype is set -->
         <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             

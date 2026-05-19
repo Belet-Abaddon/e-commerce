@@ -12,7 +12,7 @@
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    
     <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
@@ -150,17 +150,21 @@
                         </div>
                         <ul id="productsSubmenu" class="submenu ml-6 mt-1 space-y-1">
                             <li>
-                                <a href="{{ route('admin.products.index') }}"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-list w-4"></i>
                                     <span>All Products</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.products.create') }}"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-plus w-4"></i>
                                     <span>Add Product</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                    <i class="fas fa-warehouse w-4"></i>
+                                    <span>Stock Management</span>
                                 </a>
                             </li>
                         </ul>
@@ -178,15 +182,13 @@
                         </div>
                         <ul id="typesSubmenu" class="submenu ml-6 mt-1 space-y-1">
                             <li>
-                                <a href="{{ route('admin.product-types.index') }}"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-list w-4"></i>
                                     <span>All Types</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.product-types.create') }}"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-plus w-4"></i>
                                     <span>Add Type</span>
                                 </a>
@@ -206,15 +208,13 @@
                         </div>
                         <ul id="brandsSubmenu" class="submenu ml-6 mt-1 space-y-1">
                             <li>
-                                <a href="{{ route('admin.brands.index') }}"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-list w-4"></i>
                                     <span>All Brands</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.brands.create') }}"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-plus w-4"></i>
                                     <span>Add Brand</span>
                                 </a>
@@ -224,8 +224,7 @@
 
                     <!-- Orders -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200"
-                            onclick="toggleSubmenu('ordersSubmenu')">
+                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200" onclick="toggleSubmenu('ordersSubmenu')">
                             <div class="flex items-center space-x-3">
                                 <i class="fas fa-shopping-cart w-5"></i>
                                 <span>Orders</span>
@@ -234,22 +233,19 @@
                         </div>
                         <ul id="ordersSubmenu" class="submenu ml-6 mt-1 space-y-1">
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-list w-4"></i>
                                     <span>All Orders</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-clock w-4"></i>
                                     <span>Pending Orders</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-check-circle w-4"></i>
                                     <span>Completed Orders</span>
                                 </a>
@@ -259,8 +255,7 @@
 
                     <!-- Customers -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200"
-                            onclick="toggleSubmenu('customersSubmenu')">
+                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200" onclick="toggleSubmenu('customersSubmenu')">
                             <div class="flex items-center space-x-3">
                                 <i class="fas fa-users w-5"></i>
                                 <span>Customers</span>
@@ -269,15 +264,13 @@
                         </div>
                         <ul id="customersSubmenu" class="submenu ml-6 mt-1 space-y-1">
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-list w-4"></i>
                                     <span>All Customers</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-user-plus w-4"></i>
                                     <span>Add Customer</span>
                                 </a>
@@ -287,8 +280,7 @@
 
                     <!-- Promotions -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200"
-                            onclick="toggleSubmenu('promotionsSubmenu')">
+                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200" onclick="toggleSubmenu('promotionsSubmenu')">
                             <div class="flex items-center space-x-3">
                                 <i class="fas fa-gift w-5"></i>
                                 <span>Promotions</span>
@@ -297,22 +289,19 @@
                         </div>
                         <ul id="promotionsSubmenu" class="submenu ml-6 mt-1 space-y-1">
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-list w-4"></i>
                                     <span>All Promotions</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-plus w-4"></i>
                                     <span>Add Promotion</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-fire w-4"></i>
                                     <span>Active Promotions</span>
                                 </a>
@@ -322,8 +311,7 @@
 
                     <!-- Feedbacks -->
                     <li>
-                        <a href="{{ route('admin.feedback.index') }}"
-                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.feedback*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                        <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.feedbacks*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
                             <i class="fas fa-star w-5"></i>
                             <span>Feedbacks</span>
                             @php
@@ -352,29 +340,25 @@
                         </div>
                         <ul id="deliveriesSubmenu" class="submenu ml-6 mt-1 space-y-1">
                             <li>
-                                <a href="{{ route('admin.deliveries.index') }}"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-list w-4"></i>
                                     <span>All Deliveries</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.deliveries.index', ['delivery_status' => 'pending']) }}"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-hourglass-half w-4"></i>
                                     <span>Pending Deliveries</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.deliveries.index', ['delivery_status' => 'in_progress']) }}"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-spinner w-4"></i>
                                     <span>In Progress</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.deliveries.index', ['delivery_status' => 'delivered']) }}"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-check-circle w-4"></i>
                                     <span>Delivered</span>
                                 </a>
@@ -384,8 +368,7 @@
 
                     <!-- Payments -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200"
-                            onclick="toggleSubmenu('paymentsSubmenu')">
+                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200" onclick="toggleSubmenu('paymentsSubmenu')">
                             <div class="flex items-center space-x-3">
                                 <i class="fas fa-credit-card w-5"></i>
                                 <span>Payments</span>
@@ -394,29 +377,25 @@
                         </div>
                         <ul id="paymentsSubmenu" class="submenu ml-6 mt-1 space-y-1">
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-list w-4"></i>
                                     <span>All Payments</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-clock w-4"></i>
                                     <span>Pending Payments</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-check-circle w-4"></i>
                                     <span>Completed Payments</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-exchange-alt w-4"></i>
                                     <span>Transactions</span>
                                 </a>
@@ -436,43 +415,37 @@
                         </div>
                         <ul id="reportsSubmenu" class="submenu ml-6 mt-1 space-y-1">
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-chart-bar w-4"></i>
                                     <span>Sales Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-boxes w-4"></i>
                                     <span>Products Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-users w-4"></i>
                                     <span>Customers Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-dollar-sign w-4"></i>
                                     <span>Revenue Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-warehouse w-4"></i>
                                     <span>Inventory Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-truck w-4"></i>
                                     <span>Delivery Report</span>
                                 </a>
@@ -552,8 +525,7 @@
 
                     <div class="flex-1 md:flex-none">
                         <h2 class="text-lg sm:text-xl font-semibold text-admin-blue">@yield('header', 'Dashboard')</h2>
-                        <p class="text-xs sm:text-sm text-gray-500 hidden sm:block">Welcome back,
-                            {{ Auth::user()->name ?? 'Admin' }}!</p>
+                        <p class="text-xs sm:text-sm text-gray-500 hidden sm:block">Welcome back, {{ Auth::user()->name ?? 'Admin' }}!</p>
                     </div>
 
                     <div class="flex items-center space-x-3 sm:space-x-4">
@@ -589,10 +561,8 @@
                             <div id="profileDropdown"
                                 class="dropdown-menu absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden z-50">
                                 <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
-                                    <p class="text-sm font-semibold text-gray-800">
-                                        {{ Auth::user()->name ?? 'Admin User' }}</p>
-                                    <p class="text-xs text-gray-500">{{ Auth::user()->email ?? 'admin@homenest.com' }}
-                                    </p>
+                                    <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->name ?? 'Admin User' }}</p>
+                                    <p class="text-xs text-gray-500">{{ Auth::user()->email ?? 'admin@homenest.com' }}</p>
                                 </div>
                                 <div class="py-2">
                                     <a href="#"
@@ -653,10 +623,8 @@
             const currentUrl = window.location.href;
 
             // Check each submenu and open if current route matches
-            const submenus = ['productsSubmenu', 'typesSubmenu', 'brandsSubmenu', 'ordersSubmenu', 'customersSubmenu',
-                'promotionsSubmenu', 'deliveriesSubmenu', 'paymentsSubmenu', 'reportsSubmenu', 'settingsSubmenu'
-            ];
-
+            const submenus = ['productsSubmenu', 'typesSubmenu', 'brandsSubmenu', 'ordersSubmenu', 'customersSubmenu', 'promotionsSubmenu', 'deliveriesSubmenu', 'paymentsSubmenu', 'reportsSubmenu', 'settingsSubmenu'];
+            
             submenus.forEach(submenuId => {
                 const submenu = document.getElementById(submenuId);
                 if (submenu) {
@@ -703,14 +671,14 @@
         }
 
         // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             if (dropdownBtn && !dropdownBtn.contains(event.target)) {
                 closeDropdown();
             }
         });
 
         // Close dropdown on escape key
-        document.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 closeDropdown();
             }
@@ -730,7 +698,7 @@
         }
 
         // Close sidebar on window resize if screen becomes desktop
-        window.addEventListener('resize', function() {
+        window.addEventListener('resize', function () {
             if (window.innerWidth >= 768) {
                 document.getElementById('sidebar').classList.remove('-translate-x-full');
                 document.getElementById('sidebarOverlay').classList.add('hidden');
@@ -739,9 +707,59 @@
         });
 
         // Open submenu for current route on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             openSubmenuForCurrentRoute();
         });
+
+        // Function to export report as image
+        function exportAsImage(elementId, filename) {
+            const element = document.getElementById(elementId);
+            if (!element) {
+                console.error('Element not found:', elementId);
+                return;
+            }
+
+            // Show loading indicator
+            const exportBtn = event.target;
+            const originalText = exportBtn.innerHTML;
+            exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Exporting...';
+            exportBtn.disabled = true;
+
+            html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                useCORS: true
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `${filename}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+
+                // Reset button
+                exportBtn.innerHTML = originalText;
+                exportBtn.disabled = false;
+            }).catch(error => {
+                console.error('Error exporting image:', error);
+                exportBtn.innerHTML = originalText;
+                exportBtn.disabled = false;
+                alert('Error exporting image. Please try again.');
+            });
+        }
+
+        // Function to export chart as image
+        function exportChartAsImage(chartId, filename) {
+            const canvas = document.getElementById(chartId);
+            if (!canvas) {
+                console.error('Chart not found:', chartId);
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.download = `${filename}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
     </script>
 </body>
 

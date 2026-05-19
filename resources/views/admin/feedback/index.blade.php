@@ -276,11 +276,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     feedbackCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
-            // Uncheck global selector box dynamically if any child checkbox gets toggled off
             if (!this.checked && selectAll) {
                 selectAll.checked = false;
             }
-            // Check global selector box dynamically if all children checkboxes are toggled on
             if (document.querySelectorAll('.feedback-checkbox:checked').length === feedbackCheckboxes.length && selectAll) {
                 selectAll.checked = true;
             }
