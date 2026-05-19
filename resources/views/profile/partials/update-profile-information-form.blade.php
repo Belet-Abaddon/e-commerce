@@ -19,13 +19,13 @@
 
         <div>
             <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full p-2" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full p-2" :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
@@ -45,6 +45,20 @@
                     @endif
                 </div>
             @endif
+        </div>
+
+        <!-- Phone Number Field -->
+        <div>
+            <x-input-label for="ph_number" :value="__('Phone Number')" />
+            <x-text-input id="ph_number" name="ph_number" type="tel" class="mt-1 block w-full  p-2" :value="old('ph_number', $user->ph_number ?? '')" required autocomplete="tel" />
+            <x-input-error class="mt-2" :messages="$errors->get('ph_number')" />
+        </div>
+
+        <!-- Address Field -->
+        <div>
+            <x-input-label for="address" :value="__('Address')" />
+            <textarea id="address" name="address" rows="3" class="p-2 mt-1 block w-full border-gray-300 dark:border-gray-700 white:bg-gray-900 dark:text-gray-900 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>{{ old('address', $user->address ?? '') }}</textarea>
+            <x-input-error class="mt-2" :messages="$errors->get('address')" />
         </div>
 
         <div class="flex items-center gap-4">
