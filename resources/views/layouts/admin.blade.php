@@ -150,13 +150,13 @@
                         </div>
                         <ul id="productsSubmenu" class="submenu ml-6 mt-1 space-y-1">
                             <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="{{ route('admin.products.index') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-list w-4"></i>
                                     <span>All Products</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="{{ route('admin.products.create') }}" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-plus w-4"></i>
                                     <span>Add Product</span>
                                 </a>
