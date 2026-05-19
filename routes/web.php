@@ -3,6 +3,11 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\BrandController as AdminBrandController;
+use App\Http\Controllers\Admin\ProductTypeController as AdminProductTypeController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
+use App\Http\Controllers\Admin\DeliveryController as AdminDeliveryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,6 +26,33 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+
+    // Brand management routes
+    Route::resource('/brands', AdminBrandController::class);
+    Route::post('brands/{brand}/toggle-status', [AdminBrandController::class, 'toggleStatus'])->name('brands.toggle-status');
+
+    // Product Type management routes
+    Route::resource('/product-types', AdminProductTypeController::class);
+
+    // Product management routes (to be implemented)
+     Route::resource('products', AdminProductController::class);
+    Route::delete('products/image/{id}', [AdminProductController::class, 'deleteImage'])->name('products.delete-image');
+    Route::post('products/{product}/toggle-status', [AdminProductController::class, 'toggleStatus'])->name('products.toggle-status');
+
+
+// Feedback Routes
+    Route::delete('feedback/bulk-delete', [AdminFeedbackController::class, 'bulkDelete'])->name('feedback.bulk-delete');
+    Route::resource('feedback', AdminFeedbackController::class)->only(['index', 'show', 'destroy']);
+
+Route::get('deliveries', [AdminDeliveryController::class, 'index'])->name('deliveries.index');
+    Route::get('deliveries/{delivery}', [AdminDeliveryController::class, 'show'])->name('deliveries.show');
+    Route::post('deliveries/{delivery}/update-status', [AdminDeliveryController::class, 'updateStatus'])->name('deliveries.update-status');
+    Route::post('deliveries/bulk-update', [AdminDeliveryController::class, 'bulkUpdate'])->name('deliveries.bulk-update');
+    Route::get('deliveries/{delivery}/tracking', [AdminDeliveryController::class, 'getTrackingInfo'])->name('deliveries.tracking');
+
+
+
 });
 
 require __DIR__ . '/auth.php';
