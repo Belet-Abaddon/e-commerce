@@ -347,19 +347,6 @@
                     </div>
 
                     <div class="flex items-center space-x-3 sm:space-x-4">
-                        <!-- Notifications -->
-                        <button class="relative text-gray-500 hover:text-admin-blue">
-                            <i class="fas fa-bell text-lg sm:text-xl"></i>
-                            <span
-                                class="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
-                        </button>
-
-                        <!-- Messages -->
-                        <button class="text-gray-500 hover:text-admin-blue hidden sm:block">
-                            <i class="fas fa-envelope text-xl"></i>
-                        </button>
-
-                        <div class="h-6 sm:h-8 w-px bg-gray-300 hidden sm:block"></div>
 
                         <!-- Profile Dropdown -->
                         <div class="relative">

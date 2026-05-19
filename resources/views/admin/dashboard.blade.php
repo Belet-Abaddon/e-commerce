@@ -186,7 +186,7 @@
     <div class="bg-admin-white rounded-xl shadow-md p-4 sm:p-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
             <h3 class="text-base sm:text-lg font-semibold text-admin-blue">Recent Orders</h3>
-            <a href="#" class="text-admin-light-blue hover:text-admin-blue text-sm">View All Orders →</a>
+            <a href="{{ route('admin.orders.index') }}" class="text-admin-light-blue hover:text-admin-blue text-sm">View All Orders →</a>
         </div>
         
         <div class="overflow-x-auto">
@@ -217,9 +217,9 @@
                         </td>
                         <td class="px-4 py-3 whitespace-nowrap">
                             <span class="px-2 py-1 text-xs rounded-full 
-                                @if($order->status == 'Delivered') bg-green-100 text-green-700
-                                @elseif($order->status == 'Processing') bg-yellow-100 text-yellow-700
-                                @elseif($order->status == 'Shipped') bg-blue-100 text-blue-700
+                                @if($order->status == 'delivered') bg-green-100 text-green-700
+                                @elseif($order->status == 'pending') bg-yellow-100 text-yellow-700
+                                @elseif($order->status == 'in_progress') bg-blue-100 text-blue-700
                                 @else bg-red-100 text-red-700
                                 @endif">
                                 {{ $order->status }}
