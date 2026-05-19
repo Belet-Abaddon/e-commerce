@@ -12,7 +12,7 @@
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
@@ -138,8 +138,9 @@
                         </a>
                     </li>
 
-                    <!-- Products Management with Submenu -->
+                    <!-- Products -->
                     <li>
+<<<<<<< HEAD
                         <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200"
                             onclick="toggleSubmenu('productsSubmenu')">
                             <div class="flex items-center space-x-3">
@@ -168,158 +169,68 @@
                                 </a>
                             </li>
                         </ul>
+=======
+                        <a href="{{ route('admin.products.index') }}"
+                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.products*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                            <i class="fas fa-boxes w-5"></i>
+                            <span>Products</span>
+                        </a>
+>>>>>>> 94a0d092a8dd8bf48383a30e434369d4b36587e5
                     </li>
 
                     <!-- Product Types -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200"
-                            onclick="toggleSubmenu('typesSubmenu')">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-tags w-5"></i>
-                                <span>Product Types</span>
-                            </div>
-                            <i class="fas fa-chevron-right rotate-icon text-sm" id="typesIcon"></i>
-                        </div>
-                        <ul id="typesSubmenu" class="submenu ml-6 mt-1 space-y-1">
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-list w-4"></i>
-                                    <span>All Types</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-plus w-4"></i>
-                                    <span>Add Type</span>
-                                </a>
-                            </li>
-                        </ul>
+                        <a href="{{ route('admin.product-types.index') }}"
+                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.product-types*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                            <i class="fas fa-tags w-5"></i>
+                            <span>Product Types</span>
+                        </a>
                     </li>
 
                     <!-- Brands -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200"
-                            onclick="toggleSubmenu('brandsSubmenu')">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-trademark w-5"></i>
-                                <span>Brands</span>
-                            </div>
-                            <i class="fas fa-chevron-right rotate-icon text-sm" id="brandsIcon"></i>
-                        </div>
-                        <ul id="brandsSubmenu" class="submenu ml-6 mt-1 space-y-1">
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-list w-4"></i>
-                                    <span>All Brands</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-plus w-4"></i>
-                                    <span>Add Brand</span>
-                                </a>
-                            </li>
-                        </ul>
+                        <a href="{{ route('admin.brands.index') }}"
+                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.brands*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                            <i class="fas fa-trademark w-5"></i>
+                            <span>Brands</span>
+                        </a>
                     </li>
 
                     <!-- Orders -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200" onclick="toggleSubmenu('ordersSubmenu')">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-shopping-cart w-5"></i>
-                                <span>Orders</span>
-                            </div>
-                            <i class="fas fa-chevron-right rotate-icon text-sm" id="ordersIcon"></i>
-                        </div>
-                        <ul id="ordersSubmenu" class="submenu ml-6 mt-1 space-y-1">
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-list w-4"></i>
-                                    <span>All Orders</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-clock w-4"></i>
-                                    <span>Pending Orders</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-check-circle w-4"></i>
-                                    <span>Completed Orders</span>
-                                </a>
-                            </li>
-                        </ul>
+                        <a href="{{ route('admin.orders.index') }}"
+                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.orders*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                            <i class="fas fa-shopping-cart w-5"></i>
+                            <span>Orders</span>
+                        </a>
                     </li>
 
                     <!-- Customers -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200" onclick="toggleSubmenu('customersSubmenu')">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-users w-5"></i>
-                                <span>Customers</span>
-                            </div>
-                            <i class="fas fa-chevron-right rotate-icon text-sm" id="customersIcon"></i>
-                        </div>
-                        <ul id="customersSubmenu" class="submenu ml-6 mt-1 space-y-1">
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-list w-4"></i>
-                                    <span>All Customers</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-user-plus w-4"></i>
-                                    <span>Add Customer</span>
-                                </a>
-                            </li>
-                        </ul>
+                        <a href="{{ route('admin.customers.index') }}"
+                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.customers*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                            <i class="fas fa-users w-5"></i>
+                            <span>Customers</span>
+                        </a>
                     </li>
 
                     <!-- Promotions -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200" onclick="toggleSubmenu('promotionsSubmenu')">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-gift w-5"></i>
-                                <span>Promotions</span>
-                            </div>
-                            <i class="fas fa-chevron-right rotate-icon text-sm" id="promotionsIcon"></i>
-                        </div>
-                        <ul id="promotionsSubmenu" class="submenu ml-6 mt-1 space-y-1">
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-list w-4"></i>
-                                    <span>All Promotions</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-plus w-4"></i>
-                                    <span>Add Promotion</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-fire w-4"></i>
-                                    <span>Active Promotions</span>
-                                </a>
-                            </li>
-                        </ul>
+                        <a href="{{ route('admin.promotions.index') }}"
+                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.promotions*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                            <i class="fas fa-gift w-5"></i>
+                            <span>Promotions</span>
+                        </a>
                     </li>
 
                     <!-- Feedbacks -->
                     <li>
-                        <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.feedbacks*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                        <a href="{{ route('admin.feedback.index') }}"
+                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.feedback*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
                             <i class="fas fa-star w-5"></i>
                             <span>Feedbacks</span>
                             @php
-                                $unreadCount = \App\Models\Feedback::where(
-                                    'created_at',
-                                    '>=',
-                                    now()->subDays(7),
-                                )->count();
+                                $unreadCount = \App\Models\Feedback::where('created_at', '>=', now()->subDays(7))->count();
                             @endphp
                             @if ($unreadCount > 0)
                                 <span
@@ -330,80 +241,23 @@
 
                     <!-- Deliveries -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200"
-                            onclick="toggleSubmenu('deliveriesSubmenu')">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-truck w-5"></i>
-                                <span>Deliveries</span>
-                            </div>
-                            <i class="fas fa-chevron-right rotate-icon text-sm" id="deliveriesIcon"></i>
-                        </div>
-                        <ul id="deliveriesSubmenu" class="submenu ml-6 mt-1 space-y-1">
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-list w-4"></i>
-                                    <span>All Deliveries</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-hourglass-half w-4"></i>
-                                    <span>Pending Deliveries</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-spinner w-4"></i>
-                                    <span>In Progress</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-check-circle w-4"></i>
-                                    <span>Delivered</span>
-                                </a>
-                            </li>
-                        </ul>
+                        <a href="{{ route('admin.deliveries.index') }}"
+                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.deliveries*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                            <i class="fas fa-truck w-5"></i>
+                            <span>Deliveries</span>
+                        </a>
                     </li>
 
                     <!-- Payments -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200" onclick="toggleSubmenu('paymentsSubmenu')">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-credit-card w-5"></i>
-                                <span>Payments</span>
-                            </div>
-                            <i class="fas fa-chevron-right rotate-icon text-sm" id="paymentsIcon"></i>
-                        </div>
-                        <ul id="paymentsSubmenu" class="submenu ml-6 mt-1 space-y-1">
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-list w-4"></i>
-                                    <span>All Payments</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-clock w-4"></i>
-                                    <span>Pending Payments</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-check-circle w-4"></i>
-                                    <span>Completed Payments</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-exchange-alt w-4"></i>
-                                    <span>Transactions</span>
-                                </a>
-                            </li>
-                        </ul>
+                        <a href="{{ route('admin.payments.index') }}"
+                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.payments*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                            <i class="fas fa-credit-card w-5"></i>
+                            <span>Payments</span>
+                        </a>
                     </li>
 
-                    <!-- Reports -->
+                    <!-- Reports with Submenu -->
                     <li>
                         <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200"
                             onclick="toggleSubmenu('reportsSubmenu')">
@@ -415,74 +269,45 @@
                         </div>
                         <ul id="reportsSubmenu" class="submenu ml-6 mt-1 space-y-1">
                             <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="{{ route('admin.reports.sales') }}"
+                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-chart-bar w-4"></i>
                                     <span>Sales Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="{{ route('admin.reports.products') }}"
+                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-boxes w-4"></i>
                                     <span>Products Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="{{ route('admin.reports.customers') }}"
+                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-users w-4"></i>
                                     <span>Customers Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="{{ route('admin.reports.revenue') }}"
+                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-dollar-sign w-4"></i>
                                     <span>Revenue Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="{{ route('admin.reports.inventory') }}"
+                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-warehouse w-4"></i>
                                     <span>Inventory Report</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
+                                <a href="{{ route('admin.reports.deliveries') }}"
+                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-truck w-4"></i>
                                     <span>Delivery Report</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <!-- Settings -->
-                    <li class="pt-4 mt-2 border-t border-blue-800">
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200"
-                            onclick="toggleSubmenu('settingsSubmenu')">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-cog w-5"></i>
-                                <span>Settings</span>
-                            </div>
-                            <i class="fas fa-chevron-right rotate-icon text-sm" id="settingsIcon"></i>
-                        </div>
-                        <ul id="settingsSubmenu" class="submenu ml-6 mt-1 space-y-1">
-                            <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-globe w-4"></i>
-                                    <span>General Settings</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-shipping-fast w-4"></i>
-                                    <span>Shipping Settings</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-credit-card w-4"></i>
-                                    <span>Payment Settings</span>
                                 </a>
                             </li>
                         </ul>
@@ -499,10 +324,9 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-medium truncate">{{ Auth::user()->name ?? 'Admin User' }}</p>
-                        <p class="text-xs text-blue-300 truncate">{{ Auth::user()->email ?? 'admin@homenest.com' }}
-                        </p>
+                        <p class="text-xs text-blue-300 truncate">{{ Auth::user()->email ?? 'admin@homenest.com' }}</p>
                     </div>
-                    <form method="POST" action="#" class="inline">
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" class="text-blue-300 hover:text-white flex-shrink-0">
                             <i class="fas fa-sign-out-alt"></i>
@@ -525,7 +349,9 @@
 
                     <div class="flex-1 md:flex-none">
                         <h2 class="text-lg sm:text-xl font-semibold text-admin-blue">@yield('header', 'Dashboard')</h2>
-                        <p class="text-xs sm:text-sm text-gray-500 hidden sm:block">Welcome back, {{ Auth::user()->name ?? 'Admin' }}!</p>
+                        <p class="text-xs sm:text-sm text-gray-500 hidden sm:block">Welcome back,
+                            {{ Auth::user()->name ?? 'Admin' }}!
+                        </p>
                     </div>
 
                     <div class="flex items-center space-x-3 sm:space-x-4">
@@ -561,27 +387,20 @@
                             <div id="profileDropdown"
                                 class="dropdown-menu absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden z-50">
                                 <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
-                                    <p class="text-sm font-semibold text-gray-800">{{ Auth::user()->name ?? 'Admin User' }}</p>
-                                    <p class="text-xs text-gray-500">{{ Auth::user()->email ?? 'admin@homenest.com' }}</p>
+                                    <p class="text-sm font-semibold text-gray-800">
+                                        {{ Auth::user()->name ?? 'Admin User' }}
+                                    </p>
+                                    <p class="text-xs text-gray-500">{{ Auth::user()->email ?? 'admin@homenest.com' }}
+                                    </p>
                                 </div>
                                 <div class="py-2">
-                                    <a href="#"
+                                    <a href="{{ route('profile.edit') }}"
                                         class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-admin-blue transition-colors">
                                         <i class="fas fa-user-circle w-5 mr-3 text-gray-400"></i>
                                         <span>My Profile</span>
                                     </a>
-                                    <a href="#"
-                                        class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-admin-blue transition-colors">
-                                        <i class="fas fa-edit w-5 mr-3 text-gray-400"></i>
-                                        <span>Edit Profile</span>
-                                    </a>
-                                    <a href="#"
-                                        class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-admin-blue transition-colors">
-                                        <i class="fas fa-cog w-5 mr-3 text-gray-400"></i>
-                                        <span>Account Settings</span>
-                                    </a>
                                     <div class="border-t border-gray-100 my-1"></div>
-                                    <form method="POST" action="#">
+                                    <form method="POST" action="{{ route('logout') }}">
                                         @csrf
                                         <button type="submit"
                                             class="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
@@ -622,9 +441,9 @@
         function openSubmenuForCurrentRoute() {
             const currentUrl = window.location.href;
 
-            // Check each submenu and open if current route matches
-            const submenus = ['productsSubmenu', 'typesSubmenu', 'brandsSubmenu', 'ordersSubmenu', 'customersSubmenu', 'promotionsSubmenu', 'deliveriesSubmenu', 'paymentsSubmenu', 'reportsSubmenu', 'settingsSubmenu'];
-            
+            // Only Reports has submenu now
+            const submenus = ['reportsSubmenu'];
+
             submenus.forEach(submenuId => {
                 const submenu = document.getElementById(submenuId);
                 if (submenu) {
@@ -652,7 +471,7 @@
                 dropdownMenu.classList.toggle('show');
                 if (dropdownArrow) {
                     dropdownArrow.style.transform = dropdownMenu.classList.contains('show') ? 'rotate(180deg)' :
-                    'rotate(0)';
+                        'rotate(0)';
                 }
             }
         }
