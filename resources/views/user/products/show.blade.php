@@ -25,8 +25,8 @@
             <!-- Media Box (Left Side) -->
             <div class="space-y-4">
                 <div class="bg-white rounded-xl border border-gray-200 overflow-hidden p-2 shadow-sm">
-                    @if($product->images->first())
-                        <img id="mainImage" src="{{ Storage::url($product->images->first()->image_path) }}" 
+                    @if($product->images && $product->images->first())
+                        <img id="mainImage" src="{{ asset('storage/' . $product->images->first()->image_path) }}" 
                              class="w-full h-96 object-contain bg-gray-50 rounded-lg">
                     @else
                         <div class="w-full h-96 bg-gray-50 flex items-center justify-center rounded-lg">
@@ -35,12 +35,12 @@
                     @endif
                 </div>
                 
-                @if($product->images->count() > 1)
+                @if($product->images && $product->images->count() > 1)
                 <div class="grid grid-cols-4 gap-2">
                     @foreach($product->images as $image)
                     <div class="cursor-pointer border-2 border-transparent rounded-lg overflow-hidden hover:border-blue-500 transition p-0.5 bg-white shadow-sm" 
-                         onclick="document.getElementById('mainImage').src = '{{ Storage::url($image->image_path) }}'">
-                        <img src="{{ Storage::url($image->image_path) }}" class="w-full h-20 object-cover rounded-md">
+                         onclick="document.getElementById('mainImage').src = '{{ asset('storage/' . $image->image_path) }}'">
+                        <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-20 object-cover rounded-md">
                     </div>
                     @endforeach
                 </div>
@@ -57,9 +57,18 @@
                         <h1 class="text-2xl font-extrabold text-gray-900 mt-3">{{ $product->name }}</h1>
                         
                         <div class="flex items-center gap-3 mt-3">
-                            <p class="text-3xl font-black text-blue-600" id="base_price_display" data-price="{{ $product->price }}">
-                                ${{ number_format($product->price, 2) }}
-                            </p>
+                            @if(isset($product->has_promotion) && $product->has_promotion)
+                                <div>
+                                    <p class="text-sm text-gray-400 line-through">${{ number_format($product->original_price, 2) }}</p>
+                                    <p class="text-3xl font-black text-red-600">${{ number_format($product->promotion_price, 2) }}</p>
+                                    <span class="inline-block mt-1 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                        Save {{ number_format($product->discount_percentage, 0) }}%
+                                    </span>
+                                </div>
+                            @else
+                                <p class="text-3xl font-black text-blue-600">${{ number_format($product->price, 2) }}</p>
+                            @endif
+                            
                             @if($product->status == 'out_of_stock')
                                 <span class="px-2.5 py-0.5 bg-red-100 text-red-700 font-bold text-xs rounded-full">Out of Stock</span>
                             @else
@@ -88,7 +97,7 @@
                     </div>
                 </div>
 
-                <!-- Add to Cart / Qty Section -->
+                <!-- Add to Cart Section -->
                 @if($product->status !== 'out_of_stock')
                     <div class="border-t border-gray-100 pt-6 mt-6">
                         <form method="POST" action="{{ route('user.cart.add', $product->id) }}" class="space-y-4">
@@ -98,13 +107,13 @@
                                 <label class="text-sm font-bold text-gray-700">Select Quantity:</label>
                                 <div class="flex items-center border border-gray-300 rounded-lg bg-white overflow-hidden w-32 shadow-sm">
                                     <button type="button" onclick="adjustQty(-1)" class="px-3 py-1 bg-gray-50 hover:bg-gray-100 text-gray-600 font-bold focus:outline-none">-</button>
-                                    <input type="number" name="qty" id="purchase_qty" value="1" min="1" readonly class="w-full text-center border-0 text-sm font-bold text-gray-900 focus:ring-0">
+                                    <input type="number" name="qty" id="purchase_qty" value="1" min="1" class="w-full text-center border-0 text-sm font-bold text-gray-900 focus:ring-0">
                                     <button type="button" onclick="adjustQty(1)" class="px-3 py-1 bg-gray-50 hover:bg-gray-100 text-gray-600 font-bold focus:outline-none">+</button>
                                 </div>
                             </div>
 
                             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-base py-3 px-6 rounded-xl shadow-md transition flex items-center justify-center gap-2">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart Bunch
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
                             </button>
                         </form>
                     </div>
@@ -115,6 +124,44 @@
                 @endif
             </div>
         </div>
+        
+        <!-- Related Products Section -->
+        @if(isset($relatedProducts) && $relatedProducts->count() > 0)
+        <div class="mt-12">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">You May Also Like</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                @foreach($relatedProducts as $related)
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition relative">
+                    @if(isset($related->has_promotion) && $related->has_promotion)
+                        <div class="absolute top-2 left-2 z-10">
+                            <span class="bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                                -{{ number_format($related->discount_percentage, 0) }}%
+                            </span>
+                        </div>
+                    @endif
+                    <a href="{{ route('user.products.show', $related->id) }}" class="block bg-gray-50">
+                        @if($related->images && $related->images->first())
+                            <img src="{{ asset('storage/' . $related->images->first()->image_path) }}" class="w-full h-32 object-cover">
+                        @else
+                            <div class="w-full h-32 flex items-center justify-center">
+                                <i class="fas fa-couch text-gray-300 text-2xl"></i>
+                            </div>
+                        @endif
+                    </a>
+                    <div class="p-3">
+                        <h3 class="font-bold text-gray-800 text-xs line-clamp-1">{{ $related->name }}</h3>
+                        @if(isset($related->has_promotion) && $related->has_promotion)
+                            <p class="text-xs text-gray-400 line-through">${{ number_format($related->original_price, 2) }}</p>
+                            <p class="text-sm font-black text-red-600">${{ number_format($related->promotion_price, 2) }}</p>
+                        @else
+                            <p class="text-sm font-black text-blue-600">${{ number_format($related->price, 2) }}</p>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 
