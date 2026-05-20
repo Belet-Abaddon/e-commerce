@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\DeliveryController as AdminDeliveryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProductController as UserProductController;
 use App\Http\Controllers\OrderController as UserOrderController;
 use App\Http\Controllers\CartController as UserCartController;
@@ -31,6 +33,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // User Orders Routes
+    Route::prefix('orders')->name('user.orders.')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+        Route::put('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
+    });
+    // User Feedbacks Routes
+    Route::prefix('feedbacks')->name('user.feedbacks.')->group(function () {
+        Route::get('/', [FeedbackController::class, 'index'])->name('index');
+        Route::post('/', [FeedbackController::class, 'store'])->name('store');
+        Route::delete('/{id}', [FeedbackController::class, 'destroy'])->name('destroy');
+    });
 });
 
 

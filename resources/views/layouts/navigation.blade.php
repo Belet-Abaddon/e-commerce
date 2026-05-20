@@ -19,8 +19,9 @@
                         {{ __('Dashboard') }}
                     </a>
 
-                    <a href="#"
-                        class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('user.orders*') ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-700 hover:text-blue-600 hover:border-blue-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
+                    <a href="{{ route('user.orders.index') }}"
+                        class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-700 hover:text-blue-600 hover:border-blue-300 focus:outline-none focus:text-blue-600 focus:border-blue-300 transition duration-150 ease-in-out">
+             
                         <i class="fas fa-shopping-cart mr-2"></i>
                         {{ __('My Orders') }}
                     </a>
@@ -30,12 +31,13 @@
                         <i class="fas fa-tag mr-2"></i>
                         {{ __('Products') }}
                     </a>
-
-                    <a href="#"
-                        class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('user.feedback*') ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-700 hover:text-blue-600 hover:border-blue-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
+                    
+                    <a href="{{ route('user.feedbacks.index') }}"
+                        class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-700 hover:text-blue-600 hover:border-blue-300 focus:outline-none focus:text-blue-600 focus:border-blue-300 transition duration-150 ease-in-out">
                         <i class="fas fa-star mr-2"></i>
                         {{ __('Feedbacks') }}
                     </a>
+                    
                     <a href="{{ route('user.cart.index') }}"
                         class="relative inline-flex items-center px-1 pt-1 text-gray-700 hover:text-blue-600 text-sm font-medium">
                         <i class="fas fa-shopping-basket text-lg mr-1"></i> Cart Bundle
@@ -111,8 +113,8 @@
                 {{ __('Dashboard') }}
             </a>
 
-            <a href="#"
-                class="block w-full pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('user.orders*') ? 'border-blue-600 text-blue-600 bg-blue-50' : 'border-transparent text-gray-700 hover:text-blue-600 hover:border-blue-300' }} text-left text-base font-medium transition duration-150 ease-in-out">
+            <a href="{{ route('user.orders.index') }}"
+                class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-700 hover:text-blue-600 hover:border-blue-300 focus:outline-none focus:text-blue-600 focus:border-blue-300 transition duration-150 ease-in-out">
                 <i class="fas fa-shopping-cart mr-2"></i>
                 {{ __('My Orders') }}
             </a>
@@ -123,8 +125,8 @@
                 {{ __('Products') }}
             </a>
 
-            <a href="#"
-                class="block w-full pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('user.feedback*') ? 'border-blue-600 text-blue-600 bg-blue-50' : 'border-transparent text-gray-700 hover:text-blue-600 hover:border-blue-300' }} text-left text-base font-medium transition duration-150 ease-in-out">
+            <a href="{{ route('user.feedbacks.index') }}"
+                class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-700 hover:text-blue-600 hover:border-blue-300 focus:outline-none focus:text-blue-600 focus:border-blue-300 transition duration-150 ease-in-out">
                 <i class="fas fa-star mr-2"></i>
                 {{ __('Feedbacks') }}
             </a>
@@ -132,16 +134,16 @@
             
 
             <div class="mt-3 space-y-1">
-                <a href="{{ route('profile.edit') }}"
-                    class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-300 transition duration-150 ease-in-out">
+                <a :href="route('profile.edit')"
+                    class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-300 focus:outline-none focus:text-blue-600 focus:border-blue-300 transition duration-150 ease-in-out">
                     <i class="fas fa-user-circle mr-2"></i>
                     {{ __('My Profile') }}
                 </a>
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"
-                        class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-red-600 hover:text-red-700 hover:border-red-300 transition duration-150 ease-in-out">
+                    <a :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();"
+                        class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-300 focus:outline-none focus:text-blue-600 focus:border-blue-300 transition duration-150 ease-in-out">
                         <i class="fas fa-sign-out-alt mr-2"></i>
                         {{ __('Log Out') }}
                     </a>

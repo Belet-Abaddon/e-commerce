@@ -137,39 +137,14 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
-
                     <!-- Products -->
                     <li>
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer hover:bg-blue-800 text-blue-100 transition-all duration-200"
-                            onclick="toggleSubmenu('productsSubmenu')">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-boxes w-5"></i>
-                                <span>Products</span>
-                            </div>
-                            <i class="fas fa-chevron-right rotate-icon text-sm" id="productsIcon"></i>
-                        </div>
-                        <ul id="productsSubmenu" class="submenu ml-6 mt-1 space-y-1">
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-list w-4"></i>
-                                    <span>All Products</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-plus w-4"></i>
-                                    <span>Add Product</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-warehouse w-4"></i>
-                                    <span>Stock Management</span>
-                                </a>
-                            </li>
-                        </ul>
+                        <a href="{{ route('admin.products.index') }}"
+                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.dashboard') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                            <i class="fas fa-boxes w-5"></i>
+                            <span>Products</span>
+                        </a>
                     </li>
-
                     <!-- Product Types -->
                     <li>
                         <a href="{{ route('admin.product-types.index') }}"
