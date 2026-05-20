@@ -64,14 +64,15 @@ class CartController extends Controller
     /**
      * Display the current shopping cart items list and absolute sum value.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        /** @var array $cart */
-        $cart = session()->get('cart', []);
+        $cart = (array) $request->session()->get('cart', []);
         $totalAmount = 0;
 
         foreach ($cart as $item) {
-            $totalAmount += $item['price'] * $item['qty'];
+            if (is_array($item)) {
+                $totalAmount += $item['price'] * $item['qty'];
+            }
         }
 
         return view('user.cart.index', compact('cart', 'totalAmount'));
@@ -93,8 +94,7 @@ class CartController extends Controller
         $promotionPrice = $this->getDiscountedPrice($product, $promotion);
         $finalPrice = $hasPromotion ? $promotionPrice : $originalPrice;
         
-        /** @var array $cart */
-        $cart = session()->get('cart', []);
+        $cart = (array) $request->session()->get('cart', []);
 
         if (isset($cart[$id])) {
             $cart[$id]['qty'] += $qty;
@@ -111,7 +111,7 @@ class CartController extends Controller
             ];
         }
 
-        session()->put('cart', $cart);
+        $request->session()->put('cart', $cart);
 
         $message = $hasPromotion 
             ? "{$product->name} was added to your cart with {$discountPercentage}% discount!" 
@@ -125,8 +125,7 @@ class CartController extends Controller
      */
     public function update(Request $request, int $id): RedirectResponse
     {
-        /** @var array $cart */
-        $cart = session()->get('cart', []);
+        $cart = (array) $request->session()->get('cart', []);
         $qty = intval($request->input('qty', 1));
         
         if (isset($cart[$id])) {
@@ -135,7 +134,7 @@ class CartController extends Controller
             } else {
                 $cart[$id]['qty'] = $qty;
             }
-            session()->put('cart', $cart);
+            $request->session()->put('cart', $cart);
         }
         
         return redirect()->route('user.cart.index')->with('success', 'Cart updated successfully!');
@@ -144,14 +143,13 @@ class CartController extends Controller
     /**
      * Drop individual item lines out of active tracking checkout pool arrays.
      */
-    public function remove(int $id): RedirectResponse
+    public function remove(Request $request, int $id): RedirectResponse
     {
-        /** @var array $cart */
-        $cart = session()->get('cart', []);
+        $cart = (array) $request->session()->get('cart', []);
 
         if (isset($cart[$id])) {
             unset($cart[$id]);
-            session()->put('cart', $cart);
+            $request->session()->put('cart', $cart);
         }
 
         return redirect()->route('user.cart.index')->with('success', 'Item removed from cart!');
@@ -160,24 +158,25 @@ class CartController extends Controller
     /**
      * Clear entire cart.
      */
-    public function clear(): RedirectResponse
+    public function clear(Request $request): RedirectResponse
     {
-        session()->forget('cart');
+        $request->session()->forget('cart');
         return redirect()->route('user.cart.index')->with('success', 'Cart cleared successfully!');
     }
 
     /**
      * Show checkout form.
      */
-    public function checkoutForm()
+    public function checkoutForm(Request $request)
     {
-        /** @var array $cart */
-        $cart = session()->get('cart', []);
+        $cart = (array) $request->session()->get('cart', []);
         $totalAmount = 0;
         
         foreach ($cart as $item) {
-            $itemPrice = isset($item['price']) ? $item['price'] : $item['price'];
-            $totalAmount += $itemPrice * $item['qty'];
+            if (is_array($item)) {
+                $itemPrice = isset($item['price']) ? $item['price'] : 0;
+                $totalAmount += $itemPrice * $item['qty'];
+            }
         }
         
         if (empty($cart)) {
@@ -195,8 +194,7 @@ class CartController extends Controller
      */
     public function processCheckout(Request $request): RedirectResponse
     {
-        /** @var array $cart */
-        $cart = session()->get('cart', []);
+        $cart = (array) $request->session()->get('cart', []);
 
         if (empty($cart)) {
             return redirect()->route('user.products.index')->with('error', 'Your cart is empty.');
@@ -256,8 +254,10 @@ class CartController extends Controller
         // Calculate total amount for email
         $totalAmount = 0;
         foreach ($cart as $item) {
-            $itemPrice = isset($item['price']) ? $item['price'] : $item['price'];
-            $totalAmount += $itemPrice * $item['qty'];
+            if (is_array($item)) {
+                $itemPrice = isset($item['price']) ? $item['price'] : 0;
+                $totalAmount += $itemPrice * $item['qty'];
+            }
         }
 
         // Send order confirmation email only if order exists
@@ -269,7 +269,7 @@ class CartController extends Controller
             }
         }
 
-        session()->forget('cart');
+        $request->session()->forget('cart');
 
         return redirect()->route('dashboard')
             ->with('success', 'Your order has been placed successfully!' . ($order ? ' A confirmation email has been sent to ' . $user->email : ''));
