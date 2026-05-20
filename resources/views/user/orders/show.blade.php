@@ -39,42 +39,35 @@
 
                             <!-- Status Steps -->
                             <div class="relative flex justify-between">
-                                <!-- Pending Step -->
                                 <div class="text-center">
                                     <div class="relative">
                                         <div
                                             class="w-10 h-10 rounded-full {{ $order->delivery_status == 'pending' || $currentIndex >= 0 ? 'bg-blue-600' : 'bg-gray-300' }} flex items-center justify-center mx-auto mb-2 shadow-md transition-all">
                                             <i class="fas fa-clock text-white text-sm"></i>
                                         </div>
-                                        <span
-                                            class="text-xs font-medium {{ $order->delivery_status == 'pending' || $currentIndex >= 0 ? 'text-blue-600' : 'text-gray-400' }}">Pending</span>
+                                        <span class="text-xs font-medium {{ $order->delivery_status == 'pending' || $currentIndex >= 0 ? 'text-blue-600' : 'text-gray-400' }}">Pending</span>
                                     </div>
                                     <p class="text-xs text-gray-500 mt-1">Order Placed</p>
                                 </div>
 
-                                <!-- In Progress Step -->
                                 <div class="text-center">
                                     <div class="relative">
                                         <div
                                             class="w-10 h-10 rounded-full {{ $order->delivery_status == 'in_progress' || $currentIndex >= 1 ? 'bg-blue-600' : 'bg-gray-300' }} flex items-center justify-center mx-auto mb-2 shadow-md transition-all">
                                             <i class="fas fa-spinner text-white text-sm"></i>
                                         </div>
-                                        <span
-                                            class="text-xs font-medium {{ $order->delivery_status == 'in_progress' || $currentIndex >= 1 ? 'text-blue-600' : 'text-gray-400' }}">In
-                                            Progress</span>
+                                        <span class="text-xs font-medium {{ $order->delivery_status == 'in_progress' || $currentIndex >= 1 ? 'text-blue-600' : 'text-gray-400' }}">In Progress</span>
                                     </div>
                                     <p class="text-xs text-gray-500 mt-1">Processing Order</p>
                                 </div>
 
-                                <!-- Delivered Step -->
                                 <div class="text-center">
                                     <div class="relative">
                                         <div
                                             class="w-10 h-10 rounded-full {{ $order->delivery_status == 'delivered' ? 'bg-green-600' : ($currentIndex >= 2 ? 'bg-green-600' : 'bg-gray-300') }} flex items-center justify-center mx-auto mb-2 shadow-md transition-all">
                                             <i class="fas fa-check-circle text-white text-sm"></i>
                                         </div>
-                                        <span
-                                            class="text-xs font-medium {{ $order->delivery_status == 'delivered' ? 'text-green-600' : ($currentIndex >= 2 ? 'text-green-600' : 'text-gray-400') }}">Delivered</span>
+                                        <span class="text-xs font-medium {{ $order->delivery_status == 'delivered' ? 'text-green-600' : ($currentIndex >= 2 ? 'text-green-600' : 'text-gray-400') }}">Delivered</span>
                                     </div>
                                     <p class="text-xs text-gray-500 mt-1">Order Completed</p>
                                 </div>
@@ -91,14 +84,11 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Product</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Unit
-                                            Price</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Quantity</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                            Subtotal</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Original Price</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price Paid</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subtotal</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
@@ -111,32 +101,40 @@
                                                             alt="{{ $product->name }}"
                                                             class="w-12 h-12 rounded-lg object-cover mr-3">
                                                     @else
-                                                        <div
-                                                            class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
+                                                        <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
                                                             <i class="fas fa-box text-gray-400"></i>
                                                         </div>
                                                     @endif
                                                     <div>
                                                         <p class="font-medium text-gray-900">{{ $product->name }}</p>
-                                                        <p class="text-xs text-gray-500">
-                                                            {{ $product->brand->name ?? 'N/A' }}</p>
+                                                        <p class="text-xs text-gray-500">{{ $product->brand->name ?? 'N/A' }}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="px-6 py-4 text-sm text-gray-600">
-                                                ${{ number_format($product->price, 2) }}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-400 line-through">
+                                                ${{ number_format($product->price, 2) }}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                @if($product->has_promotion_at_order)
+                                                    <div>
+                                                        <span class="text-sm font-semibold text-red-600">${{ number_format($product->price_at_order, 2) }}</span>
+                                                        <span class="ml-1 text-xs bg-red-100 text-red-700 px-1 py-0.5 rounded-full">-{{ $product->discount_percentage }}%</span>
+                                                    </div>
+                                                @else
+                                                    <span class="text-sm text-gray-600">${{ number_format($product->price, 2) }}</span>
+                                                @endif
+                                            </td>
                                             <td class="px-6 py-4 text-sm text-gray-600">{{ $order->qty }}</td>
                                             <td class="px-6 py-4 text-sm font-semibold text-blue-600">
-                                                ${{ number_format($product->price * $order->qty, 2) }}</td>
+                                                ${{ number_format($product->price_at_order * $order->qty, 2) }}
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                                 <tfoot class="bg-gray-50">
                                     <tr>
-                                        <td colspan="3" class="px-6 py-4 text-right font-semibold text-gray-800">Total
-                                            Amount:</td>
-                                        <td class="px-6 py-4 text-xl font-bold text-blue-600">
-                                            ${{ number_format($order->total_amount, 2) }}</td>
+                                        <td colspan="4" class="px-6 py-4 text-right font-semibold text-gray-800">Total Amount:</td>
+                                        <td class="px-6 py-4 text-xl font-bold text-blue-600">${{ number_format($order->total_amount, 2) }}</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -177,8 +175,7 @@
                         <div class="space-y-3">
                             <div class="flex justify-between">
                                 <span class="text-sm text-gray-500">Order Date</span>
-                                <span
-                                    class="text-sm font-medium text-gray-800">{{ \Carbon\Carbon::parse($order->order_date)->format('M d, Y') }}</span>
+                                <span class="text-sm font-medium text-gray-800">{{ \Carbon\Carbon::parse($order->order_date)->format('M d, Y') }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-sm text-gray-500">Total Items</span>
@@ -198,8 +195,7 @@
                             <div class="border-t pt-3 mt-2">
                                 <div class="flex justify-between">
                                     <span class="text-lg font-semibold text-gray-800">Total Paid</span>
-                                    <span
-                                        class="text-xl font-bold text-blue-600">${{ number_format($order->total_amount, 2) }}</span>
+                                    <span class="text-xl font-bold text-blue-600">${{ number_format($order->total_amount, 2) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -212,8 +208,7 @@
                                 <i class="fas fa-exclamation-triangle text-red-500 mt-0.5 mr-3"></i>
                                 <div>
                                     <h4 class="font-semibold text-red-800 mb-1">Cancel Order</h4>
-                                    <p class="text-sm text-red-600 mb-4">You can cancel this order as long as it hasn't been
-                                        processed yet.</p>
+                                    <p class="text-sm text-red-600 mb-4">You can cancel this order as long as it hasn't been processed yet.</p>
                                     <form action="{{ route('user.orders.cancel', $order->id) }}" method="POST"
                                         onsubmit="return confirm('Are you sure you want to cancel this order? This action cannot be undone.')">
                                         @csrf

@@ -114,7 +114,6 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
     Route::get('/products/filter/price', [UserProductController::class, 'filterByPrice'])->name('products.filter-price');
     Route::get('/products/brand/{brandId}', [UserProductController::class, 'getByBrand'])->name('products.by-brand');
 
-
     // Cart Routes
     Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
@@ -132,6 +131,7 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
         Route::get('/{id}', [OrderController::class, 'show'])->name('show');
         Route::put('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
     });
+
     // User Feedbacks Routes
     Route::prefix('feedbacks')->name('feedbacks.')->group(function () {
         Route::get('/', [FeedbackController::class, 'index'])->name('index');
