@@ -24,6 +24,8 @@ use App\Models\User;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/products', [UserProductController::class, 'publicIndex'])->name('public.products.index');
+Route::get('/products/{id}', [UserProductController::class, 'publicShow'])->name('public.products.show');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])

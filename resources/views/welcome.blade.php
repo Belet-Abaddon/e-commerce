@@ -1,5 +1,37 @@
+<?php
+use App\Models\Product;
+use App\Models\ProductType;
+use App\Models\Brand;
+use App\Models\Feedback;
+
+// Get featured products (limit 4)
+$featuredProducts = Product::with(['brand', 'productType', 'images'])
+    ->where('status', 'active')
+    ->latest()
+    ->take(4)
+    ->get();
+
+// Get categories with product counts
+$categories = ProductType::withCount('products')->take(4)->get();
+
+// Get brands with product counts
+$brands = Brand::withCount('products')->take(4)->get();
+
+// Get recent testimonials
+$testimonials = Feedback::with('user')
+    ->latest()
+    ->take(3)
+    ->get();
+
+// Get product statistics
+$totalProducts = Product::count();
+$totalOrders = \App\Models\Order::count();
+$totalCustomers = \App\Models\User::count();
+?>
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,7 +47,7 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -33,12 +65,14 @@
         .hero-gradient {
             background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
         }
+
         .feature-card:hover {
             transform: translateY(-5px);
             transition: all 0.3s ease;
         }
     </style>
 </head>
+
 <body class="font-sans antialiased">
     <!-- Navigation -->
     <nav class="bg-white shadow-md fixed w-full z-50">
@@ -57,6 +91,7 @@
                     <a href="#home" class="text-gray-700 hover:text-blue-600 transition">Home</a>
                     <a href="#products" class="text-gray-700 hover:text-blue-600 transition">Products</a>
                     <a href="#categories" class="text-gray-700 hover:text-blue-600 transition">Categories</a>
+                    <a href="#brands" class="text-gray-700 hover:text-blue-600 transition">Brands</a>
                     <a href="#about" class="text-gray-700 hover:text-blue-600 transition">About</a>
                     <a href="#contact" class="text-gray-700 hover:text-blue-600 transition">Contact</a>
                 </div>
@@ -66,17 +101,20 @@
                     @if (Route::has('login'))
                         @auth
                             @if(Auth::user()->role === 'admin')
-                                <a href="{{ route('admin.dashboard') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                                <a href="{{ route('admin.dashboard') }}"
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                                     Dashboard
                                 </a>
                             @else
-                                <a href="{{ route('dashboard') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                                <a href="{{ route('dashboard') }}"
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                                     Dashboard
                                 </a>
                             @endif
                         @else
                             <a href="{{ route('login') }}" class="text-gray-700 hover:text-blue-600 transition">Login</a>
-                            <a href="{{ route('register') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                            <a href="{{ route('register') }}"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                                 Register
                             </a>
                         @endauth
@@ -96,6 +134,7 @@
                 <a href="#home" class="block py-2 text-gray-700 hover:text-blue-600">Home</a>
                 <a href="#products" class="block py-2 text-gray-700 hover:text-blue-600">Products</a>
                 <a href="#categories" class="block py-2 text-gray-700 hover:text-blue-600">Categories</a>
+                <a href="#brands" class="block py-2 text-gray-700 hover:text-blue-600">Brands</a>
                 <a href="#about" class="block py-2 text-gray-700 hover:text-blue-600">About</a>
                 <a href="#contact" class="block py-2 text-gray-700 hover:text-blue-600">Contact</a>
             </div>
@@ -111,22 +150,47 @@
                         Welcome to HomeNest
                     </h1>
                     <p class="text-lg md:text-xl mb-6 text-blue-100">
-                        Discover quality furniture that transforms your house into a home. 
+                        Discover quality furniture that transforms your house into a home.
                         Modern designs, comfortable materials, and affordable prices.
                     </p>
                     <div class="flex space-x-4">
-                        <a href="#products" class="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition">
+                        <a href="{{ route('public.products.index') }}"
+                            class="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition">
                             Shop Now
                         </a>
-                        <a href="#about" class="px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition">
+                        <a href="#about"
+                            class="px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition">
                             Learn More
                         </a>
                     </div>
                 </div>
                 <div class="hidden md:block">
-                    <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&h=500&fit=crop" 
-                         alt="Modern Living Room" 
-                         class="rounded-lg shadow-xl">
+                    <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&h=500&fit=crop"
+                        alt="Modern Living Room" class="rounded-lg shadow-xl">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <div>
+                    <div class="text-3xl font-bold text-blue-600">{{ number_format($totalProducts) }}+</div>
+                    <div class="text-sm text-gray-500">Products</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-blue-600">{{ number_format($totalOrders) }}+</div>
+                    <div class="text-sm text-gray-500">Orders Completed</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-blue-600">{{ number_format($totalCustomers) }}+</div>
+                    <div class="text-sm text-gray-500">Happy Customers</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-blue-600">{{ number_format($brands->count()) }}+</div>
+                    <div class="text-sm text-gray-500">Trusted Brands</div>
                 </div>
             </div>
         </div>
@@ -173,76 +237,42 @@
                 <p class="text-gray-600">Discover our most popular furniture pieces</p>
             </div>
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Product 1 -->
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition">
-                    <img src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=300&h=200&fit=crop" 
-                         alt="Modern Sofa" 
-                         class="w-full h-48 object-cover">
-                    <div class="p-4">
-                        <h3 class="font-semibold text-gray-800">Modern Fabric Sofa</h3>
-                        <p class="text-sm text-gray-500 mb-2">Comfortable and stylish</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xl font-bold text-blue-600">$499</span>
-                            <button class="text-blue-600 hover:text-blue-700">
-                                <i class="fas fa-shopping-cart"></i>
-                            </button>
+                @forelse($featuredProducts as $product)
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition group">
+                        <a href="{{ route('user.products.show', $product->id) }}" class="block">
+                            @if($product->images && $product->images->first())
+                                <img src="{{ asset('storage/' . $product->images->first()->image_path) }}"
+                                    alt="{{ $product->name }}"
+                                    class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
+                            @else
+                                <div class="w-full h-48 bg-gray-100 flex items-center justify-center">
+                                    <i class="fas fa-couch text-gray-300 text-4xl"></i>
+                                </div>
+                            @endif
+                        </a>
+                        <div class="p-4">
+                            <p class="text-xs text-gray-500">{{ $product->brand->name ?? 'HomeNest' }}</p>
+                            <h3 class="font-semibold text-gray-800 mt-1">{{ $product->name }}</h3>
+                            <p class="text-sm text-gray-500 mb-2">{{ Str::limit($product->description, 50) }}</p>
+                            <div class="flex justify-between items-center">
+                                <span
+                                    class="text-xl font-bold text-blue-600">${{ number_format($product->price, 2) }}</span>
+                                <a href="{{ route('user.products.show', $product->id) }}"
+                                    class="text-blue-600 hover:text-blue-700">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Product 2 -->
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition">
-                    <img src="https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?w=300&h=200&fit=crop" 
-                         alt="Wooden Dining Table" 
-                         class="w-full h-48 object-cover">
-                    <div class="p-4">
-                        <h3 class="font-semibold text-gray-800">Wooden Dining Table</h3>
-                        <p class="text-sm text-gray-500 mb-2">6-seater family table</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xl font-bold text-blue-600">$699</span>
-                            <button class="text-blue-600 hover:text-blue-700">
-                                <i class="fas fa-shopping-cart"></i>
-                            </button>
-                        </div>
+                @empty
+                    <div class="col-span-4 text-center py-12">
+                        <p class="text-gray-500">No products available</p>
                     </div>
-                </div>
-
-                <!-- Product 3 -->
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition">
-                    <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=300&h=200&fit=crop" 
-                         alt="King Size Bed" 
-                         class="w-full h-48 object-cover">
-                    <div class="p-4">
-                        <h3 class="font-semibold text-gray-800">King Size Bed</h3>
-                        <p class="text-sm text-gray-500 mb-2">With storage drawers</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xl font-bold text-blue-600">$899</span>
-                            <button class="text-blue-600 hover:text-blue-700">
-                                <i class="fas fa-shopping-cart"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product 4 -->
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition">
-                    <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=300&h=200&fit=crop" 
-                         alt="Office Chair" 
-                         class="w-full h-48 object-cover">
-                    <div class="p-4">
-                        <h3 class="font-semibold text-gray-800">Ergonomic Chair</h3>
-                        <p class="text-sm text-gray-500 mb-2">For home office</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xl font-bold text-blue-600">$249</span>
-                            <button class="text-blue-600 hover:text-blue-700">
-                                <i class="fas fa-shopping-cart"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                @endforelse
             </div>
             <div class="text-center mt-8">
-                <a href="#" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                <a href="{{ route('public.products.index') }}"
+                    class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                     View All Products
                 </a>
             </div>
@@ -257,73 +287,108 @@
                 <p class="text-gray-600">Find exactly what you're looking for</p>
             </div>
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="relative overflow-hidden rounded-xl group cursor-pointer">
-                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&h=250&fit=crop" 
-                         alt="Living Room" 
-                         class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                        <h3 class="text-2xl font-bold text-white">Living Room</h3>
+                @forelse($categories as $category)
+                    <a href="{{ route('public.products.index', ['product_type_id' => $category->id]) }}"
+                        class="relative overflow-hidden rounded-xl group cursor-pointer block">
+                        <!-- Background gradient with random colors -->
+                        <div class="absolute inset-0 bg-gradient-to-br 
+                                    @if($loop->index % 4 == 0) from-blue-500 to-blue-600
+                                    @elseif($loop->index % 4 == 1) from-purple-500 to-purple-600
+                                    @elseif($loop->index % 4 == 2) from-green-500 to-green-600
+                                    @else from-orange-500 to-orange-600
+                                    @endif">
+                        </div>
+                        <div class="relative p-8 text-center text-white">
+                            <div class="mb-4">
+                                @if($loop->index % 4 == 0)
+                                    <i class="fas fa-couch text-4xl"></i>
+                                @elseif($loop->index % 4 == 1)
+                                    <i class="fas fa-bed text-4xl"></i>
+                                @elseif($loop->index % 4 == 2)
+                                    <i class="fas fa-utensils text-4xl"></i>
+                                @else
+                                    <i class="fas fa-chair text-4xl"></i>
+                                @endif
+                            </div>
+                            <h3 class="text-2xl font-bold mb-2">{{ $category->name }}</h3>
+                            <p class="text-sm opacity-90">{{ $category->products_count ?? 0 }} products</p>
+                            @if($category->description)
+                                <p class="text-xs mt-2 opacity-75">{{ Str::limit($category->description, 60) }}</p>
+                            @endif
+                        </div>
+                        <!-- Hover overlay -->
+                        <div
+                            class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300">
+                        </div>
+                    </a>
+                @empty
+                    <div class="col-span-4 text-center py-12 bg-white rounded-xl">
+                        <i class="fas fa-tags text-5xl text-gray-300 mb-3"></i>
+                        <p class="text-gray-500">No categories available</p>
                     </div>
-                </div>
-                <div class="relative overflow-hidden rounded-xl group cursor-pointer">
-                    <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=300&h=250&fit=crop" 
-                         alt="Bedroom" 
-                         class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                        <h3 class="text-2xl font-bold text-white">Bedroom</h3>
+                @endforelse
+            </div>
+        </div>
+    </section>
+
+    <!-- Brands Section -->
+    <section id="brands" class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Our Trusted Brands</h2>
+                <p class="text-gray-600">We partner with the best furniture brands</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                @forelse($brands as $brand)
+                    <div class="bg-white rounded-xl shadow-sm p-6 text-center hover:shadow-md transition">
+                        @if($brand->logo)
+                            <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}"
+                                class="h-16 mx-auto mb-3 object-contain">
+                        @else
+                            <i class="fas fa-trademark text-4xl text-blue-600 mb-3"></i>
+                        @endif
+                        <h3 class="font-semibold text-gray-800">{{ $brand->name }}</h3>
+                        <p class="text-xs text-gray-500">{{ $brand->products_count }} products</p>
                     </div>
-                </div>
-                <div class="relative overflow-hidden rounded-xl group cursor-pointer">
-                    <img src="https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=300&h=250&fit=crop" 
-                         alt="Dining" 
-                         class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                        <h3 class="text-2xl font-bold text-white">Dining</h3>
+                @empty
+                    <div class="col-span-4 text-center py-12">
+                        <p class="text-gray-500">No brands available</p>
                     </div>
-                </div>
-                <div class="relative overflow-hidden rounded-xl group cursor-pointer">
-                    <img src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=300&h=250&fit=crop" 
-                         alt="Office" 
-                         class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
-                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                        <h3 class="text-2xl font-bold text-white">Office</h3>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-16">
+    <section id="about" class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div>
-                    <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&h=400&fit=crop" 
-                         alt="About Us" 
-                         class="rounded-lg shadow-lg">
+                    <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&h=400&fit=crop"
+                        alt="About Us" class="rounded-lg shadow-lg">
                 </div>
                 <div>
                     <h2 class="text-3xl font-bold text-gray-800 mb-4">About HomeNest</h2>
                     <p class="text-gray-600 mb-4">
-                        Founded in 2020, HomeNest has grown to become one of the leading furniture 
-                        retailers in the region. We pride ourselves on offering high-quality, 
+                        Founded in 2020, HomeNest has grown to become one of the leading furniture
+                        retailers in the region. We pride ourselves on offering high-quality,
                         stylish furniture at affordable prices.
                     </p>
                     <p class="text-gray-600 mb-6">
-                        Our mission is to help you create the perfect home environment with 
+                        Our mission is to help you create the perfect home environment with
                         furniture that combines comfort, style, and durability.
                     </p>
                     <div class="flex items-center space-x-6">
                         <div>
-                            <p class="text-2xl font-bold text-blue-600">5000+</p>
+                            <p class="text-2xl font-bold text-blue-600">{{ number_format($totalCustomers) }}+</p>
                             <p class="text-sm text-gray-500">Happy Customers</p>
                         </div>
                         <div>
-                            <p class="text-2xl font-bold text-blue-600">1000+</p>
-                            <p class="text-sm text-gray-500">Products Sold</p>
+                            <p class="text-2xl font-bold text-blue-600">{{ number_format($totalProducts) }}+</p>
+                            <p class="text-sm text-gray-500">Products</p>
                         </div>
                         <div>
-                            <p class="text-2xl font-bold text-blue-600">50+</p>
+                            <p class="text-2xl font-bold text-blue-600">{{ number_format($brands->count()) }}+</p>
                             <p class="text-sm text-gray-500">Brand Partners</p>
                         </div>
                     </div>
@@ -333,76 +398,43 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section class="py-16 bg-gray-50">
+    <section class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-800 mb-2">What Our Customers Say</h2>
                 <p class="text-gray-600">Trusted by thousands of happy customers</p>
             </div>
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="bg-white rounded-xl p-6 shadow-sm">
-                    <div class="flex text-yellow-400 mb-3">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <p class="text-gray-600 mb-4">"Excellent quality furniture! The delivery was fast and the customer service was very helpful."</p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-user text-blue-600"></i>
+                @forelse($testimonials as $testimonial)
+                    <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition">
+                        <div class="flex text-yellow-400 mb-3">
+                            @for($i = 1; $i <= 5; $i++)
+                                <i
+                                    class="fas fa-star {{ $i <= $testimonial->rating ? 'text-yellow-400' : 'text-gray-300' }}"></i>
+                            @endfor
                         </div>
-                        <div>
-                            <p class="font-semibold">Sarah Johnson</p>
-                            <p class="text-sm text-gray-500">Verified Buyer</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white rounded-xl p-6 shadow-sm">
-                    <div class="flex text-yellow-400 mb-3">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <p class="text-gray-600 mb-4">"Beautiful modern designs. The sofa I bought is very comfortable and looks great in my living room."</p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-user text-blue-600"></i>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Michael Chen</p>
-                            <p class="text-sm text-gray-500">Verified Buyer</p>
+                        <p class="text-gray-600 mb-4">"{{ Str::limit($testimonial->feedback, 120) }}"</p>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                <i class="fas fa-user text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-semibold">{{ $testimonial->user->name }}</p>
+                                <p class="text-sm text-gray-500">Verified Buyer</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="bg-white rounded-xl p-6 shadow-sm">
-                    <div class="flex text-yellow-400 mb-3">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
+                @empty
+                    <div class="col-span-3 text-center py-12">
+                        <p class="text-gray-500">No testimonials available</p>
                     </div>
-                    <p class="text-gray-600 mb-4">"Great selection of furniture. The bed frame is sturdy and the assembly instructions were easy to follow."</p>
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-user text-blue-600"></i>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Emily Davis</p>
-                            <p class="text-sm text-gray-500">Verified Buyer</p>
-                        </div>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-16">
+    <section id="contact" class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-2 gap-12">
                 <div>
@@ -426,18 +458,19 @@
                 <div>
                     <form class="space-y-4">
                         <div>
-                            <input type="text" placeholder="Your Name" 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <input type="text" placeholder="Your Name"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <div>
-                            <input type="email" placeholder="Your Email" 
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <input type="email" placeholder="Your Email"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <div>
-                            <textarea rows="4" placeholder="Your Message" 
-                                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                            <textarea rows="4" placeholder="Your Message"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
                         </div>
-                        <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                        <button type="submit"
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                             Send Message
                         </button>
                     </form>
@@ -452,8 +485,8 @@
             <h2 class="text-3xl font-bold text-white mb-4">Subscribe to Our Newsletter</h2>
             <p class="text-blue-100 mb-6">Get the latest updates on new products and exclusive offers</p>
             <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input type="email" placeholder="Your email address" 
-                       class="flex-1 px-4 py-2 rounded-lg focus:outline-none">
+                <input type="email" placeholder="Your email address"
+                    class="flex-1 px-4 py-2 rounded-lg focus:outline-none">
                 <button class="px-6 py-2 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition">
                     Subscribe
                 </button>
@@ -484,10 +517,10 @@
                 <div>
                     <h3 class="font-semibold mb-4">Categories</h3>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition">Living Room</a></li>
-                        <li><a href="#" class="hover:text-white transition">Bedroom</a></li>
-                        <li><a href="#" class="hover:text-white transition">Dining</a></li>
-                        <li><a href="#" class="hover:text-white transition">Office</a></li>
+                        @foreach($categories as $category)
+                            <li><a href="{{ route('user.products.index', ['product_type_id' => $category->id]) }}"
+                                    class="hover:text-white transition">{{ $category->name }}</a></li>
+                        @endforeach
                     </ul>
                 </div>
                 <div>
@@ -501,7 +534,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 HomeNest Furniture. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} HomeNest Furniture. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -510,10 +543,12 @@
         // Mobile menu toggle
         const mobileMenuButton = document.getElementById('mobileMenuButton');
         const mobileMenu = document.getElementById('mobileMenu');
-        
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+
+        if (mobileMenuButton) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
 
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -522,10 +557,11 @@
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth' });
-                    mobileMenu.classList.add('hidden');
+                    if (mobileMenu) mobileMenu.classList.add('hidden');
                 }
             });
         });
     </script>
 </body>
+
 </html>

@@ -1,7 +1,8 @@
 @if($products->count() > 0)
     <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
         @foreach($products as $product)
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition group flex flex-col justify-between relative">
+            <div
+                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition group flex flex-col justify-between relative">
                 @if(isset($product->has_promotion) && $product->has_promotion)
                     <div class="absolute top-2 left-2 z-10">
                         <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-sm">
@@ -11,8 +12,8 @@
                 @endif
                 <a href="{{ route('user.products.show', $product->id) }}" class="block bg-gray-50 border-b">
                     @if($product->images && $product->images->count() > 0)
-                        <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" 
-                             class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
+                        <img src="{{ asset('storage/' . $product->images->first()->image_path) }}"
+                            class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
                     @else
                         <div class="w-full h-48 flex items-center justify-center">
                             <i class="fas fa-couch text-gray-300 text-4xl"></i>
@@ -37,8 +38,8 @@
                                 <p class="text-base font-black text-blue-600">${{ number_format($product->price, 2) }}</p>
                             @endif
                         </div>
-                        <a href="{{ route('user.products.show', $product->id) }}" 
-                           class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-700 shadow-sm transition">
+                        <a href="{{ route('user.products.show', $product->id) }}"
+                            class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-700 shadow-sm transition">
                             Order Now
                         </a>
                     </div>
