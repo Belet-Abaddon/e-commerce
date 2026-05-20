@@ -13,11 +13,52 @@ use Illuminate\Http\RedirectResponse;
 class OrderController extends Controller
 {
     /**
+     * Get promotion for a product at a specific date.
+     *
+     * @param int $productId
+     * @param string $orderDate
+     * @return mixed
+     */
+    private function getPromotionAtDate($productId, $orderDate)
+    {
+        $promotion = DB::table('promotion_products')
+            ->join('promotions', 'promotion_products.promotion_id', '=', 'promotions.id')
+            ->where('promotion_products.product_id', $productId)
+            ->where('promotions.start_date', '<=', $orderDate)
+            ->where('promotions.end_date', '>=', $orderDate)
+            ->select('promotion_products.percentage')
+            ->first();
+        
+        return $promotion;
+    }
+
+    /**
+     * Calculate discounted price at a specific date.
+     *
+     * @param float $price
+     * @param int $productId
+     * @param string $orderDate
+     * @return float
+     */
+    private function getDiscountedPriceAtDate($price, $productId, $orderDate)
+    {
+        $promotion = $this->getPromotionAtDate($productId, $orderDate);
+        
+        if ($promotion && isset($promotion->percentage)) {
+            $discount = $promotion->percentage;
+            $discountedPrice = $price - ($price * $discount / 100);
+            return round($discountedPrice, 2);
+        }
+        
+        return $price;
+    }
+
+    /**
      * Display all orders with pagination (10 per page)
      */
     public function index(Request $request): View
     {
-        $query = Order::with(['user', 'products']);
+        $query = Order::with(['user', 'products', 'deliveries']);
         
         // Search by customer name or email
         if ($request->has('search') && $request->search) {
@@ -35,11 +76,15 @@ class OrderController extends Controller
         // Paginate with 10 items per page
         $orders = $query->latest('order_date')->paginate(10);
         
-        // Calculate total amount for each order from product_orders
+        // Calculate total amount for each order with promotion prices
         foreach ($orders as $order) {
-            $order->total_amount = $order->products->sum(function($product) use ($order) {
-                return $product->price * $order->qty;
-            });
+            $totalAmount = 0;
+            foreach ($order->products as $product) {
+                $priceAtOrder = $this->getDiscountedPriceAtDate($product->price, $product->id, $order->order_date);
+                $totalAmount += $priceAtOrder * $order->qty;
+            }
+            $order->total_amount = $totalAmount;
+            $order->delivery_status = $order->deliveries->first()->delivery_status ?? 'pending';
         }
         
         return view('admin.orders.index', compact('orders'));
@@ -50,15 +95,25 @@ class OrderController extends Controller
      */
     public function show(int $id): View
     {
-        $order = Order::with(['user', 'products', 'products.images', 'products.productType', 'products.brand'])
+        $order = Order::with(['user', 'products', 'products.images', 'products.productType', 'products.brand', 'deliveries', 'payments'])
             ->findOrFail($id);
         
-        // Calculate total amount
-        $order->total_amount = $order->products->sum(function($product) use ($order) {
-            return $product->price * $order->qty;
-        });
+        // Calculate total amount with promotion prices
+        $totalAmount = 0;
+        foreach ($order->products as $product) {
+            $priceAtOrder = $this->getDiscountedPriceAtDate($product->price, $product->id, $order->order_date);
+            $totalAmount += $priceAtOrder * $order->qty;
+            
+            // Store calculated price for display
+            $product->price_at_order = $priceAtOrder;
+            $product->has_promotion_at_order = ($priceAtOrder < $product->price);
+            $product->discount_percentage = $product->has_promotion_at_order 
+                ? round((($product->price - $priceAtOrder) / $product->price) * 100, 0)
+                : 0;
+        }
+        $order->total_amount = $totalAmount;
+        $order->delivery_status = $order->deliveries->first()->delivery_status ?? 'pending';
         
-        // Get all products for the order
         $products = $order->products;
         
         return view('admin.orders.show', compact('order', 'products'));

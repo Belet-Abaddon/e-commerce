@@ -11,6 +11,17 @@
             <i class="fas fa-arrow-left mr-2"></i>
             Back to Orders
         </a>
+        <div>
+            <span class="text-sm text-gray-500 mr-2">Delivery Status:</span>
+            <span class="px-2 py-1 text-xs rounded-full
+                @if($order->delivery_status == 'delivered') bg-green-100 text-green-700
+                @elseif($order->delivery_status == 'in_progress') bg-blue-100 text-blue-700
+                @elseif($order->delivery_status == 'cancelled') bg-red-100 text-red-700
+                @else bg-yellow-100 text-yellow-700
+                @endif">
+                {{ ucfirst(str_replace('_', ' ', $order->delivery_status)) }}
+            </span>
+        </div>
     </div>
 
     <!-- Order Information Grid -->
@@ -97,18 +108,19 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Brand</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Original Price</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price Paid</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subtotal</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($products as $product)
                     <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 py-4">
                             <div class="flex items-center">
                                 @if($product->images && $product->images->first())
                                     <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" 
@@ -122,25 +134,35 @@
                                 <span class="font-medium text-gray-900">{{ $product->name }}</span>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
                             {{ $product->productType->name ?? 'N/A' }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
                             {{ $product->brand->name ?? 'N/A' }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-admin-blue">
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-400 line-through">
                             ${{ number_format($product->price, 2) }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            @if(isset($product->has_promotion_at_order) && $product->has_promotion_at_order)
+                                <div class="flex items-center space-x-1">
+                                    <span class="text-sm font-semibold text-red-600">${{ number_format($product->price_at_order, 2) }}</span>
+                                    <span class="text-xs bg-red-100 text-red-700 px-1 py-0.5 rounded-full">-{{ $product->discount_percentage }}%</span>
+                                </div>
+                            @else
+                                <span class="text-sm text-gray-600">${{ number_format($product->price, 2) }}</span>
+                            @endif
+                        </td>
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
                             {{ $order->qty }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-admin-blue">
-                            ${{ number_format($product->price * $order->qty, 2) }}
+                        <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold text-admin-blue">
+                            ${{ number_format(isset($product->price_at_order) ? $product->price_at_order * $order->qty : $product->price * $order->qty, 2) }}
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                        <td colspan="7" class="px-4 py-8 text-center text-gray-500">
                             <i class="fas fa-box-open text-4xl mb-2"></i>
                             <p>No products found for this order</p>
                         </td>
@@ -149,8 +171,8 @@
                 </tbody>
                 <tfoot class="bg-gray-50">
                     <tr>
-                        <td colspan="5" class="px-6 py-4 text-right font-semibold text-gray-800">Total Amount:</td>
-                        <td class="px-6 py-4 text-xl font-bold text-admin-blue">
+                        <td colspan="6" class="px-4 py-4 text-right font-semibold text-gray-800">Total Amount:</td>
+                        <td class="px-4 py-4 text-xl font-bold text-admin-blue">
                             ${{ number_format($order->total_amount, 2) }}
                         </td>
                     </tr>
@@ -158,6 +180,35 @@
             </table>
         </div>
     </div>
+
+    <!-- Payment Information -->
+    @if($order->payments && $order->payments->first())
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="bg-gradient-to-r from-admin-blue to-admin-light-blue px-6 py-4">
+            <h3 class="text-white font-semibold text-lg">Payment Information</h3>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-gray-500">Payment Type</p>
+                    <p class="text-sm font-medium text-gray-900">{{ ucfirst(str_replace('_', ' ', $order->payments->first()->payment_type)) }}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Payment Name</p>
+                    <p class="text-sm font-medium text-gray-900">{{ $order->payments->first()->payment_name }}</p>
+                </div>
+                @if($order->payments->first()->screenshot)
+                <div class="md:col-span-2">
+                    <p class="text-sm text-gray-500 mb-2">Payment Screenshot</p>
+                    <a href="{{ asset('storage/' . $order->payments->first()->screenshot) }}" target="_blank" class="text-admin-blue hover:text-admin-light-blue">
+                        <i class="fas fa-image mr-1"></i> View Screenshot
+                    </a>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- Order Timeline -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden">
@@ -179,7 +230,7 @@
                         </div>
                     </div>
                     
-                    <!-- Order Confirmation (1 day after order date) -->
+                    <!-- Order Confirmation -->
                     @php
                         $confirmationDate = \Carbon\Carbon::parse($order->order_date)->addDays(1);
                     @endphp
@@ -196,7 +247,7 @@
                         </div>
                     </div>
                     
-                    <!-- Estimated Delivery (based on delivery type) -->
+                    <!-- Estimated Delivery -->
                     @php
                         $deliveryDays = $order->delivery_type == 'express' ? 3 : 7;
                         $estimatedDelivery = \Carbon\Carbon::parse($order->order_date)->addDays($deliveryDays);
@@ -224,7 +275,7 @@
     </div>
 
     <!-- Action Buttons -->
-    <div class="flex justify-end space-x-3">
+    <div class="flex justify-end">
         <button onclick="deleteOrder({{ $order->id }})" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
             <i class="fas fa-trash mr-2"></i> Delete Order
         </button>

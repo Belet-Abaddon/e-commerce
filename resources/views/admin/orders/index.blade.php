@@ -62,32 +62,32 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Date</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery Type</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Date</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery Type</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery Name</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($orders as $order)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 py-4 whitespace-nowrap">
                             <span class="text-sm font-medium text-gray-900">#{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 py-4 whitespace-nowrap">
                             <div>
                                 <p class="text-sm font-medium text-gray-900">{{ $order->user->name }}</p>
                                 <p class="text-xs text-gray-500">{{ $order->user->email }}</p>
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
                             {{ \Carbon\Carbon::parse($order->order_date)->format('M d, Y') }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-4 py-4 whitespace-nowrap">
                             <span class="px-2 py-1 text-xs rounded-full 
                                 @if($order->delivery_type == 'express') bg-blue-100 text-blue-700
                                 @else bg-gray-100 text-gray-700
@@ -95,24 +95,24 @@
                                 {{ ucfirst($order->delivery_type) }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
                             {{ $order->delivery_name }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">
                             {{ $order->qty }} item(s)
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="text-sm font-semibold text-admin-blue">${{ number_format($order->total_amount ?? 0, 2) }}</span>
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <span class="text-sm font-semibold text-green-600">${{ number_format($order->total_amount ?? 0, 2) }}</span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <td class="px-4 py-4 whitespace-nowrap text-sm">
                             <div class="flex space-x-2">
                                 <a href="{{ route('admin.orders.show', $order->id) }}" 
-                                   class="text-admin-blue hover:text-admin-light-blue" 
+                                   class="text-blue-600 hover:text-blue-800" 
                                    title="View Details">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 <button onclick="deleteOrder({{ $order->id }})" 
-                                        class="text-red-600 hover:text-red-700" 
+                                        class="text-red-600 hover:text-red-800" 
                                         title="Delete Order">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -121,7 +121,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="px-6 py-12 text-center text-gray-500">
+                        <td colspan="8" class="px-4 py-8 text-center text-gray-500">
                             <i class="fas fa-shopping-cart text-4xl mb-2"></i>
                             <p>No orders found</p>
                             @if(request('search') || request('order_date'))
@@ -134,7 +134,7 @@
             </table>
         </div>
         
-        <!-- Pagination with 10 items per page -->
+        <!-- Pagination -->
         <div class="px-6 py-4 border-t bg-gray-50">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="text-sm text-gray-500">
