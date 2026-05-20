@@ -14,6 +14,10 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\DeliveryController as AdminDeliveryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProductController as UserProductController;
+use App\Http\Controllers\OrderController as UserOrderController;
+use App\Http\Controllers\CartController as UserCartController;
+use App\Models\User;
 
 Route::get('/', function () {
     return view('welcome');
@@ -93,6 +97,25 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('deliveries/{delivery}/update-status', [AdminDeliveryController::class, 'updateStatus'])->name('deliveries.update-status');
     Route::post('deliveries/bulk-update', [AdminDeliveryController::class, 'bulkUpdate'])->name('deliveries.bulk-update');
     Route::get('deliveries/{delivery}/tracking', [AdminDeliveryController::class, 'getTrackingInfo'])->name('deliveries.tracking');
+});
+
+Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
+    // Product routes
+    Route::get('/products', [UserProductController::class, 'index'])->name('products.index');
+    Route::get('/products/{id}', [UserProductController::class, 'show'])->name('products.show');
+    Route::get('/products/{id}/order', [UserProductController::class, 'orderForm'])->name('products.order');
+    Route::post('/products/{id}/place-order', [UserProductController::class, 'placeOrder'])->name('products.place-order');
+
+    // Filter routes
+    Route::get('/products/filter/price', [UserProductController::class, 'filterByPrice'])->name('products.filter-price');
+    Route::get('/products/brand/{brandId}', [UserProductController::class, 'getByBrand'])->name('products.by-brand');
+
+
+    // Shopping Cart Operations Management Routing channels
+    Route::get('cart', [UserCartController::class, 'index'])->name('cart.index');
+    Route::post('cart/add/{id}', [UserCartController::class, 'add'])->name('cart.add');
+    Route::get('cart/remove/{id}', [UserCartController::class, 'remove'])->name('cart.remove');
+    Route::post('cart/checkout', [UserCartController::class, 'checkout'])->name('cart.checkout');
 });
 
 require __DIR__ . '/auth.php';
