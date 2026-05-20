@@ -82,6 +82,7 @@ class CartController extends Controller
      */
     public function add(Request $request, int $id): RedirectResponse
     {
+        /** @var \App\Models\Product $product */
         $product = Product::with('images', 'promotions')->findOrFail($id);
         $qty = intval($request->input('qty', 1));
         
@@ -183,6 +184,7 @@ class CartController extends Controller
             return redirect()->route('user.cart.index')->with('error', 'Your cart is empty.');
         }
         
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         
         return view('user.cart.checkout', compact('cart', 'totalAmount', 'user'));
@@ -209,6 +211,7 @@ class CartController extends Controller
             'screenshot'    => 'nullable|image|max:2048'
         ]);
 
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         if (!$user) {
             return redirect()->route('login')->with('error', 'Please login to complete checkout.');
@@ -218,6 +221,7 @@ class CartController extends Controller
 
         DB::transaction(function() use ($request, $cart, $user, &$order) {
             
+            /** @var \App\Models\Order $order */
             $order = Order::create([
                 'order_date'    => now(),
                 'order_address' => $request->order_address,
