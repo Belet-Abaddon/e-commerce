@@ -11,32 +11,38 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use App\Mail\OrderConfirmationMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
     /**
      * Get active promotion for a product.
      *
-     * @param Product $product
+     * @param Product|object $product
      * @return mixed
      */
     private function getActivePromotion($product)
     {
         $today = date('Y-m-d');
-        
-        // Get active promotion for this product
-        $promotion = $product->promotions()
-            ->where('start_date', '<=', $today)
-            ->where('end_date', '>=', $today)
-            ->first();
-        
-        return $promotion;
+
+        if (method_exists($product, 'promotions')) {
+            $promotion = $product->promotions()
+                ->where('start_date', '<=', $today)
+                ->where('end_date', '>=', $today)
+                ->first();
+
+            return $promotion;
+        }
+
+        return null;
     }
 
     /**
      * Calculate discounted price.
      *
-     * @param Product $product
+     * @param Product|object $product
      * @param mixed $promotion
      * @return float
      */
@@ -45,13 +51,13 @@ class CartController extends Controller
         if (!$promotion) {
             $promotion = $this->getActivePromotion($product);
         }
-        
+
         if ($promotion && isset($promotion->pivot->percentage)) {
             $discount = $promotion->pivot->percentage;
             $discountedPrice = $product->price - ($product->price * $discount / 100);
             return round($discountedPrice, 2);
         }
-        
+
         return (float) $product->price;
     }
 
@@ -65,11 +71,7 @@ class CartController extends Controller
         $totalAmount = 0;
 
         foreach ($cart as $item) {
-            // Use promotion price if available, otherwise use original price
-            $priceToUse = isset($item['has_promotion']) && $item['has_promotion'] 
-                ? $item['promotion_price'] 
-                : $item['price'];
-            $totalAmount += $priceToUse * $item['qty'];
+            $totalAmount += $item['price'] * $item['qty'];
         }
 
         return view('user.cart.index', compact('cart', 'totalAmount'));
@@ -83,14 +85,11 @@ class CartController extends Controller
         $product = Product::with('images', 'promotions')->findOrFail($id);
         $qty = intval($request->input('qty', 1));
         
-        // Get promotion price if available
         $promotion = $this->getActivePromotion($product);
         $hasPromotion = $promotion ? true : false;
         $discountPercentage = $promotion ? $promotion->pivot->percentage : 0;
         $originalPrice = $product->price;
         $promotionPrice = $this->getDiscountedPrice($product, $promotion);
-        
-        // IMPORTANT: Use promotion price as the main price if promotion exists
         $finalPrice = $hasPromotion ? $promotionPrice : $originalPrice;
         
         /** @var array $cart */
@@ -102,7 +101,7 @@ class CartController extends Controller
             $cart[$id] = [
                 "name"               => $product->name,
                 "qty"                => $qty,
-                "price"              => $finalPrice,  // Store the actual price to charge
+                "price"              => $finalPrice,
                 "original_price"     => $originalPrice,
                 "promotion_price"    => $promotionPrice,
                 "has_promotion"      => $hasPromotion,
@@ -117,8 +116,7 @@ class CartController extends Controller
             ? "{$product->name} was added to your cart with {$discountPercentage}% discount!" 
             : "{$product->name} was added to your cart!";
 
-        return redirect()->route('user.products.index')
-            ->with('success', $message);
+        return redirect()->route('user.products.index')->with('success', $message);
     }
 
     /**
@@ -177,8 +175,8 @@ class CartController extends Controller
         $totalAmount = 0;
         
         foreach ($cart as $item) {
-            // Use the stored price (which is already promotion price if applicable)
-            $totalAmount += $item['price'] * $item['qty'];
+            $itemPrice = isset($item['price']) ? $item['price'] : $item['price'];
+            $totalAmount += $itemPrice * $item['qty'];
         }
         
         if (empty($cart)) {
@@ -216,7 +214,9 @@ class CartController extends Controller
             return redirect()->route('login')->with('error', 'Please login to complete checkout.');
         }
 
-        DB::transaction(function() use ($request, $cart, $user) {
+        $order = null;
+
+        DB::transaction(function() use ($request, $cart, $user, &$order) {
             
             $order = Order::create([
                 'order_date'    => now(),
@@ -249,9 +249,25 @@ class CartController extends Controller
             ]);
         });
 
+        // Calculate total amount for email
+        $totalAmount = 0;
+        foreach ($cart as $item) {
+            $itemPrice = isset($item['price']) ? $item['price'] : $item['price'];
+            $totalAmount += $itemPrice * $item['qty'];
+        }
+
+        // Send order confirmation email only if order exists
+        if ($order) {
+            try {
+                Mail::to($user->email)->send(new OrderConfirmationMail($order, $cart, $totalAmount));
+            } catch (\Exception $e) {
+                Log::error('Failed to send order confirmation email: ' . $e->getMessage());
+            }
+        }
+
         session()->forget('cart');
 
         return redirect()->route('dashboard')
-            ->with('success', 'Your order has been placed successfully!');
+            ->with('success', 'Your order has been placed successfully!' . ($order ? ' A confirmation email has been sent to ' . $user->email : ''));
     }
 }

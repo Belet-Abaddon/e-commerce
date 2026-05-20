@@ -102,6 +102,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('deliveries/{delivery}/update-status', [AdminDeliveryController::class, 'updateStatus'])->name('deliveries.update-status');
     Route::post('deliveries/bulk-update', [AdminDeliveryController::class, 'bulkUpdate'])->name('deliveries.bulk-update');
     Route::get('deliveries/{delivery}/tracking', [AdminDeliveryController::class, 'getTrackingInfo'])->name('deliveries.tracking');
+    Route::post('deliveries/{delivery}/send-email', [AdminDeliveryController::class, 'sendEmail'])->name('admin.deliveries.send-email');
 });
 
 Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
