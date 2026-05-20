@@ -18,12 +18,14 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProductController as UserProductController;
 use App\Http\Controllers\OrderController as UserOrderController;
-use App\Http\Controllers\CartController as UserCartController;
+use App\Http\Controllers\CartController;
 use App\Models\User;
 
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/products', [UserProductController::class, 'publicIndex'])->name('public.products.index');
+Route::get('/products/{id}', [UserProductController::class, 'publicShow'])->name('public.products.show');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -33,18 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    // User Orders Routes
-    Route::prefix('orders')->name('user.orders.')->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('index');
-        Route::get('/{id}', [OrderController::class, 'show'])->name('show');
-        Route::put('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
-    });
-    // User Feedbacks Routes
-    Route::prefix('feedbacks')->name('user.feedbacks.')->group(function () {
-        Route::get('/', [FeedbackController::class, 'index'])->name('index');
-        Route::post('/', [FeedbackController::class, 'store'])->name('store');
-        Route::delete('/{id}', [FeedbackController::class, 'destroy'])->name('destroy');
-    });
+    
 });
 
 
@@ -111,25 +102,45 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('deliveries/{delivery}/update-status', [AdminDeliveryController::class, 'updateStatus'])->name('deliveries.update-status');
     Route::post('deliveries/bulk-update', [AdminDeliveryController::class, 'bulkUpdate'])->name('deliveries.bulk-update');
     Route::get('deliveries/{delivery}/tracking', [AdminDeliveryController::class, 'getTrackingInfo'])->name('deliveries.tracking');
+    Route::post('deliveries/{delivery}/send-email', [AdminDeliveryController::class, 'sendEmail'])->name('admin.deliveries.send-email');
 });
 
 Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
-    // Product routes
-    Route::get('/products', [UserProductController::class, 'index'])->name('products.index');
-    Route::get('/products/{id}', [UserProductController::class, 'show'])->name('products.show');
-    Route::get('/products/{id}/order', [UserProductController::class, 'orderForm'])->name('products.order');
-    Route::post('/products/{id}/place-order', [UserProductController::class, 'placeOrder'])->name('products.place-order');
+    // User Products Routes
+    Route::prefix('products')->name('products.')->group(function () {
+        Route::get('/', [UserProductController::class, 'index'])->name('index');
+        Route::get('/{id}', [UserProductController::class, 'show'])->name('show');
+        Route::post('/{id}/order', [UserProductController::class, 'placeOrder'])->name('order');
+    });
 
     // Filter routes
     Route::get('/products/filter/price', [UserProductController::class, 'filterByPrice'])->name('products.filter-price');
     Route::get('/products/brand/{brandId}', [UserProductController::class, 'getByBrand'])->name('products.by-brand');
 
+    // Cart Routes
+    Route::prefix('cart')->name('cart.')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::post('/add/{id}', [CartController::class, 'add'])->name('add');
+        Route::get('/update/{id}', [CartController::class, 'update'])->name('update');
+        Route::get('/remove/{id}', [CartController::class, 'remove'])->name('remove');
+        Route::get('/clear', [CartController::class, 'clear'])->name('clear');
+        Route::get('/checkout', [CartController::class, 'checkoutForm'])->name('checkout');
+        Route::post('/checkout', [CartController::class, 'processCheckout'])->name('process.checkout');
+    });
 
-    // Shopping Cart Operations Management Routing channels
-    Route::get('cart', [UserCartController::class, 'index'])->name('cart.index');
-    Route::post('cart/add/{id}', [UserCartController::class, 'add'])->name('cart.add');
-    Route::get('cart/remove/{id}', [UserCartController::class, 'remove'])->name('cart.remove');
-    Route::post('cart/checkout', [UserCartController::class, 'checkout'])->name('cart.checkout');
+    // User Orders Routes
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+        Route::put('/{id}/cancel', [OrderController::class, 'cancel'])->name('cancel');
+    });
+
+    // User Feedbacks Routes
+    Route::prefix('feedbacks')->name('feedbacks.')->group(function () {
+        Route::get('/', [FeedbackController::class, 'index'])->name('index');
+        Route::post('/', [FeedbackController::class, 'store'])->name('store');
+        Route::delete('/{id}', [FeedbackController::class, 'destroy'])->name('destroy');
+    });
 });
 
 require __DIR__ . '/auth.php';

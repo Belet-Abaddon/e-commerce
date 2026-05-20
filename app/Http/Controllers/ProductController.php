@@ -17,39 +17,84 @@ use Illuminate\View\View;
 class ProductController extends Controller
 {
     /**
+     * Get active promotion for a product.
+     *
+     * @param Product|object $product
+     * @return mixed
+     */
+    private function getActivePromotion($product)
+    {
+        $today = date('Y-m-d');
+
+        // Check if product has promotions relationship
+        if (method_exists($product, 'promotions')) {
+            $promotion = $product->promotions()
+                ->where('start_date', '<=', $today)
+                ->where('end_date', '>=', $today)
+                ->first();
+
+            return $promotion;
+        }
+
+        return null;
+    }
+
+    /**
+     * Calculate discounted price.
+     *
+     * @param Product|object $product
+     * @param mixed $promotion
+     * @return float
+     */
+    private function getDiscountedPrice($product, $promotion = null)
+    {
+        if (!$promotion) {
+            $promotion = $this->getActivePromotion($product);
+        }
+
+        if ($promotion && isset($promotion->pivot->percentage)) {
+            $discount = $promotion->pivot->percentage;
+            $discountedPrice = $product->price - ($product->price * $discount / 100);
+            return round($discountedPrice, 2);
+        }
+
+        return (float) $product->price;
+    }
+
+    /**
      * Display product catalog with synchronized query filters.
      */
     public function index(Request $request): View
     {
-        $query = Product::with(['brand', 'productType', 'images'])
+        $query = Product::with(['brand', 'productType', 'images', 'promotions'])
             ->where('status', 'active');
 
         // Search by product text string value
-        if ($request->has('search') && !empty($request->search)) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+        if ($request->has('search') && !empty($request->input('search'))) {
+            $query->where('name', 'like', '%' . $request->input('search') . '%');
         }
 
         // Filter by brand selection parameter context
-        if ($request->has('brand_id') && !empty($request->brand_id)) {
-            $query->where('brand_id', $request->brand_id);
+        if ($request->has('brand_id') && !empty($request->input('brand_id'))) {
+            $query->where('brand_id', $request->input('brand_id'));
         }
 
         // Filter by structural category data type identifier
-        if ($request->has('product_type_id') && !empty($request->product_type_id)) {
-            $query->where('product_type_id', $request->product_type_id);
+        if ($request->has('product_type_id') && !empty($request->input('product_type_id'))) {
+            $query->where('product_type_id', $request->input('product_type_id'));
         }
 
         // Filter by calculated currency bounding ranges
-        if ($request->has('min_price') && !empty($request->min_price)) {
-            $query->where('price', '>=', $request->min_price);
+        if ($request->has('min_price') && !empty($request->input('min_price'))) {
+            $query->where('price', '>=', $request->input('min_price'));
         }
-        if ($request->has('max_price') && !empty($request->max_price)) {
-            $query->where('price', '<=', $request->max_price);
+        if ($request->has('max_price')) {
+            $query->where('price', '<=', $request->input('max_price'));
         }
 
         // Sort configuration evaluations mapping rules
-        $sort = $request->get('sort', 'created_at');
-        $order = $request->get('order', 'desc');
+        $sort = $request->input('sort', 'created_at');
+        $order = $request->input('order', 'desc');
 
         if ($sort == 'price') {
             $query->orderBy('price', $order);
@@ -61,22 +106,40 @@ class ProductController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
+        // Calculate promotion prices for each product
+        foreach ($products as $product) {
+            $promotion = $this->getActivePromotion($product);
+            $product->has_promotion = $promotion ? true : false;
+            $product->discount_percentage = $promotion ? $promotion->pivot->percentage : 0;
+            $product->original_price = $product->price;
+            $product->promotion_price = $this->getDiscountedPrice($product, $promotion);
+        }
+
         // Count product assets mapped securely per brand item block references
-        $brands = Brand::withCount(['products' => function($q) {
+        $brands = Brand::withCount(['products' => function ($q) {
             $q->where('status', 'active');
         }])->get();
-        
+
         $productTypes = ProductType::all();
 
         // Highly compatible subquery calculating most ordered items by reading layout qty from orders
-        $mostOrdered = Product::with(['brand', 'images'])
+        $mostOrdered = Product::with(['brand', 'images', 'promotions'])
             ->where('status', 'active')
             ->withCount(['orders as total_units_sold' => function ($q) {
                 $q->select(DB::raw('SUM(orders.qty)'));
             }])
             ->orderByDesc('total_units_sold')
-            ->limit(3)
+            ->limit(4)
             ->get();
+
+        // Calculate promotion prices for most ordered products
+        foreach ($mostOrdered as $product) {
+            $promotion = $this->getActivePromotion($product);
+            $product->has_promotion = $promotion ? true : false;
+            $product->discount_percentage = $promotion ? $promotion->pivot->percentage : 0;
+            $product->original_price = $product->price;
+            $product->promotion_price = $this->getDiscountedPrice($product, $promotion);
+        }
 
         // Discover absolute pricing limits for view configuration parameters
         $minPrice = Product::where('status', 'active')->min('price') ?? 0;
@@ -97,17 +160,33 @@ class ProductController extends Controller
      */
     public function show(int $id): View
     {
-        $product = Product::with(['brand', 'productType', 'images'])->findOrFail($id);
+        $product = Product::with(['brand', 'productType', 'images', 'promotions'])->findOrFail($id);
 
-        $relatedProducts = Product::with(['brand', 'images'])
+        // Calculate promotion price
+        $promotion = $this->getActivePromotion($product);
+        $product->has_promotion = $promotion ? true : false;
+        $product->discount_percentage = $promotion ? $promotion->pivot->percentage : 0;
+        $product->original_price = $product->price;
+        $product->promotion_price = $this->getDiscountedPrice($product, $promotion);
+
+        $relatedProducts = Product::with(['brand', 'images', 'promotions'])
             ->where('status', 'active')
             ->where('id', '!=', $product->id)
             ->where(function ($query) use ($product) {
                 $query->where('brand_id', $product->brand_id)
-                      ->orWhere('product_type_id', $product->product_type_id);
+                    ->orWhere('product_type_id', $product->product_type_id);
             })
             ->limit(4)
             ->get();
+
+        // Calculate promotion prices for related products
+        foreach ($relatedProducts as $related) {
+            $relatedPromotion = $this->getActivePromotion($related);
+            $related->has_promotion = $relatedPromotion ? true : false;
+            $related->discount_percentage = $relatedPromotion ? $relatedPromotion->pivot->percentage : 0;
+            $related->original_price = $related->price;
+            $related->promotion_price = $this->getDiscountedPrice($related, $relatedPromotion);
+        }
 
         return view('user.products.show', compact('product', 'relatedProducts'));
     }
@@ -148,7 +227,7 @@ class ProductController extends Controller
 
         // Execute queries inside structured atomic database transaction blocks
         DB::transaction(function () use ($request, $product) {
-            
+
             // NO MIGRATION COMPATIBLE MODE: Saves qty directly here onto the orders schema column fields pool
             $order = Order::create([
                 'order_date'    => now(),
@@ -196,11 +275,11 @@ class ProductController extends Controller
         $query = Product::with(['brand', 'productType', 'images'])
             ->where('status', 'active');
 
-        if ($request->has('min_price') && !empty($request->min_price)) {
-            $query->where('price', '>=', $request->min_price);
+        if ($request->has('min_price') && !empty($request->input('min_price'))) {
+            $query->where('price', '>=', $request->input('min_price'));
         }
-        if ($request->has('max_price') && !empty($request->max_price)) {
-            $query->where('price', '<=', $request->max_price);
+        if ($request->has('max_price') && !empty($request->input('max_price'))) {
+            $query->where('price', '<=', $request->input('max_price'));
         }
 
         $products = $query->paginate(12);
@@ -219,5 +298,95 @@ class ProductController extends Controller
             ->paginate(12);
 
         return view('user.products.partials.product_grid', compact('products'))->render();
+    }
+
+    /**
+     * Public product catalog (no authentication required)
+     */
+    public function publicIndex(Request $request): View
+    {
+        $query = Product::with(['brand', 'productType', 'images', 'promotions'])
+            ->where('status', 'active');
+
+        // Search by product name
+        if ($request->has('search') && !empty($request->input('search'))) {
+            $query->where('name', 'like', '%' . $request->input('search') . '%');
+        }
+
+        // Filter by product type
+        if ($request->has('product_type_id') && !empty($request->input('product_type_id'))) {
+            $query->where('product_type_id', $request->input('product_type_id'));
+        }
+
+        // Filter by brand
+        if ($request->has('brand_id') && !empty($request->input('brand_id'))) {
+            $query->where('brand_id', $request->input('brand_id'));
+        }
+
+        // Price range filter
+        if ($request->has('min_price') && !empty($request->input('min_price'))) {
+            $query->where('price', '>=', $request->input('min_price'));
+        }
+        if ($request->has('max_price') && !empty($request->input('max_price'))) {
+            $query->where('price', '<=', $request->input('max_price'));
+        }
+
+        $products = $query->paginate(12)->withQueryString();
+
+        // Calculate promotion prices for each product
+        foreach ($products as $product) {
+            $promotion = $this->getActivePromotion($product);
+            $product->has_promotion = $promotion ? true : false;
+            $product->discount_percentage = $promotion ? $promotion->pivot->percentage : 0;
+            $product->original_price = $product->price;
+            $product->promotion_price = $this->getDiscountedPrice($product, $promotion);
+        }
+
+        $brands = Brand::withCount(['products' => function ($q) {
+            $q->where('status', 'active');
+        }])->get();
+
+        $productTypes = ProductType::all();
+
+        $minPrice = Product::where('status', 'active')->min('price') ?? 0;
+        $maxPrice = Product::where('status', 'active')->max('price') ?? 5000;
+
+        return view('public.products.index', compact('products', 'brands', 'productTypes', 'minPrice', 'maxPrice'));
+    }
+
+    /**
+     * Public product details (no authentication required)
+     */
+    public function publicShow(int $id): View
+    {
+        $product = Product::with(['brand', 'productType', 'images', 'promotions'])->findOrFail($id);
+
+        // Calculate promotion price
+        $promotion = $this->getActivePromotion($product);
+        $product->has_promotion = $promotion ? true : false;
+        $product->discount_percentage = $promotion ? $promotion->pivot->percentage : 0;
+        $product->original_price = $product->price;
+        $product->promotion_price = $this->getDiscountedPrice($product, $promotion);
+
+        $relatedProducts = Product::with(['brand', 'images', 'promotions'])
+            ->where('status', 'active')
+            ->where('id', '!=', $product->id)
+            ->where(function ($query) use ($product) {
+                $query->where('brand_id', $product->brand_id)
+                    ->orWhere('product_type_id', $product->product_type_id);
+            })
+            ->limit(4)
+            ->get();
+
+        // Calculate promotion prices for related products
+        foreach ($relatedProducts as $related) {
+            $relatedPromotion = $this->getActivePromotion($related);
+            $related->has_promotion = $relatedPromotion ? true : false;
+            $related->discount_percentage = $relatedPromotion ? $relatedPromotion->pivot->percentage : 0;
+            $related->original_price = $related->price;
+            $related->promotion_price = $this->getDiscountedPrice($related, $relatedPromotion);
+        }
+
+        return view('public.products.show', compact('product', 'relatedProducts'));
     }
 }

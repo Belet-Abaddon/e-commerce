@@ -206,11 +206,16 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     <div class="flex items-center justify-center gap-3">
                                         <a href="{{ route('admin.deliveries.show', $delivery) }}" class="text-blue-600 hover:text-blue-900" title="View Details">
-                                            <i class="fas fa-eye"></i>
+                    <i class="fas fa-eye"></i>
                                         </a>
                                         <button type="button" onclick="showTracking({{ $delivery->id }})" class="text-green-600 hover:text-green-900 focus:outline-none" title="Track Delivery">
                                             <i class="fas fa-map-marker-alt"></i>
                                         </button>
+                                        @if($delivery->delivery_status == 'in_progress')
+                                        <button type="button" onclick="sendDeliveryEmail({{ $delivery->id }})" class="text-purple-600 hover:text-purple-900" title="Send Delivery Notification Email">
+                                            <i class="fas fa-envelope"></i>
+                                        </button>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -308,7 +313,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
 function updateDeliveryStatus(deliveryId, status) {
     fetch(`/admin/deliveries/${deliveryId}/update-status`, {
         method: 'POST',
@@ -322,12 +326,7 @@ function updateDeliveryStatus(deliveryId, status) {
             delivery_status: status 
         })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response connection matrix failure drop.');
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.success) {
             showNotification('Delivery tracking milestone state updated successfully!', 'success');
@@ -374,13 +373,38 @@ function showTracking(deliveryId) {
         });
 }
 
+function sendDeliveryEmail(deliveryId) {
+    if (confirm('Send delivery notification email to customer?')) {
+        fetch(`/admin/deliveries/${deliveryId}/send-email`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Email sent successfully to customer!', 'success');
+            } else {
+                showNotification('Failed to send email: ' + (data.message || 'Unknown error'), 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error sending email. Please try again.', 'error');
+        });
+    }
+}
+
 function closeTrackingModal() {
     document.getElementById('trackingModal').classList.add('hidden');
 }
 
 function showNotification(message, type) {
     const notification = document.createElement('div');
-    notification.className = `fixed top-24 right-4 RegalAlert z-50 px-6 py-3 rounded-lg shadow-xl text-white ${type === 'success' ? 'bg-green-600' : 'bg-red-600'} transition-all duration-300 transform translate-y-0`;
+    notification.className = `fixed top-24 right-4 z-50 px-6 py-3 rounded-lg shadow-xl text-white ${type === 'success' ? 'bg-green-600' : 'bg-red-600'} transition-all duration-300 transform translate-y-0`;
     notification.innerHTML = `
         <div class="flex items-center gap-2 font-medium text-sm">
             <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
