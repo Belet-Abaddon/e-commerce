@@ -13,28 +13,40 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
-                        class="text-gray-700 hover:text-blue-600">
+                    <a href="{{ route('dashboard') }}"
+                        class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('dashboard') ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-700 hover:text-blue-600 hover:border-blue-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
                         <i class="fas fa-tachometer-alt mr-2"></i>
                         {{ __('Dashboard') }}
-                    </x-nav-link>
+                    </a>
 
                     <a href="{{ route('user.orders.index') }}"
                         class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-700 hover:text-blue-600 hover:border-blue-300 focus:outline-none focus:text-blue-600 focus:border-blue-300 transition duration-150 ease-in-out">
+             
                         <i class="fas fa-shopping-cart mr-2"></i>
                         {{ __('My Orders') }}
                     </a>
 
-                    <a href="#"
-                        class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-700 hover:text-blue-600 hover:border-blue-300 focus:outline-none focus:text-blue-600 focus:border-blue-300 transition duration-150 ease-in-out">
+                    <a href="{{ route('user.products.index') }}"
+                        class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('user.products*') ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-700 hover:text-blue-600 hover:border-blue-300' }} text-sm font-medium leading-5 transition duration-150 ease-in-out">
                         <i class="fas fa-tag mr-2"></i>
                         {{ __('Products') }}
                     </a>
-
+                    
                     <a href="{{ route('user.feedbacks.index') }}"
                         class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-700 hover:text-blue-600 hover:border-blue-300 focus:outline-none focus:text-blue-600 focus:border-blue-300 transition duration-150 ease-in-out">
                         <i class="fas fa-star mr-2"></i>
                         {{ __('Feedbacks') }}
+                    </a>
+                    
+                    <a href="{{ route('user.cart.index') }}"
+                        class="relative inline-flex items-center px-1 pt-1 text-gray-700 hover:text-blue-600 text-sm font-medium">
+                        <i class="fas fa-shopping-basket text-lg mr-1"></i> Cart Bundle
+                        @if (session()->has('cart') && count(session()->get('cart')) > 0)
+                            <span
+                                class="absolute -top-1 -right-3 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center animate-bounce">
+                                {{ count(session()->get('cart')) }}
+                            </span>
+                        @endif
                     </a>
                 </div>
             </div>
@@ -60,7 +72,6 @@
                                 {{ __('My Profile') }}
                             </x-dropdown-link>
 
-
                             <div class="border-t border-gray-100 my-1"></div>
 
                             <form method="POST" action="{{ route('logout') }}">
@@ -82,10 +93,10 @@
                 <button @click="open = ! open"
                     class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
+                        <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
+                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
                             stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -94,10 +105,10 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <a :href="route('dashboard')" :active="request()->routeIs('dashboard')"
-                class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-300 focus:outline-none focus:text-blue-600 focus:border-blue-300 transition duration-150 ease-in-out">
+            <a href="{{ route('dashboard') }}"
+                class="block w-full pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('dashboard') ? 'border-blue-600 text-blue-600 bg-blue-50' : 'border-transparent text-gray-700 hover:text-blue-600 hover:border-blue-300' }} text-left text-base font-medium transition duration-150 ease-in-out">
                 <i class="fas fa-tachometer-alt mr-2"></i>
                 {{ __('Dashboard') }}
             </a>
@@ -108,8 +119,8 @@
                 {{ __('My Orders') }}
             </a>
 
-            <a href="#"
-                class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-700 hover:text-blue-600 hover:border-blue-300 focus:outline-none focus:text-blue-600 focus:border-blue-300 transition duration-150 ease-in-out">
+            <a href="{{ route('user.products.index') }}"
+                class="block w-full pl-3 pr-4 py-2 border-l-4 {{ request()->routeIs('user.products*') ? 'border-blue-600 text-blue-600 bg-blue-50' : 'border-transparent text-gray-700 hover:text-blue-600 hover:border-blue-300' }} text-left text-base font-medium transition duration-150 ease-in-out">
                 <i class="fas fa-tag mr-2"></i>
                 {{ __('Products') }}
             </a>
@@ -119,6 +130,8 @@
                 <i class="fas fa-star mr-2"></i>
                 {{ __('Feedbacks') }}
             </a>
+
+            
 
             <div class="mt-3 space-y-1">
                 <a :href="route('profile.edit')"

@@ -16,24 +16,30 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    @stack('styles')
 </head>
 <body class="font-sans antialiased bg-gray-50">
     <div class="min-h-screen bg-gray-50">
         @include('layouts.navigation')
 
         <!-- Page Heading -->
-        @isset($header)
+        @if(isset($header) || View::hasSection('header'))
             <header class="bg-white shadow-sm border-b border-blue-100">
                 <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
+                    {{ $header ?? '' }}
+                    @yield('header')
                 </div>
             </header>
-        @endisset
+        @endif
 
         <!-- Page Content -->
         <main>
-            {{ $slot }}
+            @yield('content')
+            {{ $slot ?? '' }}
         </main>
     </div>
+    
+    @stack('scripts')
 </body>
 </html>
