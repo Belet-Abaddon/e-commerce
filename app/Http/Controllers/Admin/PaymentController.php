@@ -37,7 +37,7 @@ class PaymentController extends Controller
             'bank_transfer' => Payment::where('payment_type', 'bank_transfer')->count(),
             'credit_card' => Payment::where('payment_type', 'credit_card')->count(),
             'cash_on_delivery' => Payment::where('payment_type', 'cash_on_delivery')->count(),
-            'mobile_payment' => Payment::where('payment_type', 'mobile_payment')->count(),
+            'e_wallet' => Payment::where('payment_type', 'e_wallet')->count(),
         ];
         
         return view('admin.payments.index', compact('payments', 'typeCounts'));

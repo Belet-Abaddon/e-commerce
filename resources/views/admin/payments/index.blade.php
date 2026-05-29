@@ -47,7 +47,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-gray-500 text-sm">Mobile Payment</p>
-                    <p class="text-2xl font-bold text-purple-600">{{ $typeCounts['mobile_payment'] }}</p>
+                    <p class="text-2xl font-bold text-purple-600">{{ $typeCounts['e_wallet'] }}</p>
                 </div>
                 <i class="fas fa-mobile-alt text-3xl text-purple-400"></i>
             </div>

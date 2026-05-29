@@ -140,7 +140,7 @@
                     <!-- Products -->
                     <li>
                         <a href="{{ route('admin.products.index') }}"
-                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.dashboard') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
+                            class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 {{ request()->routeIs('admin.products*') ? 'bg-admin-light-blue text-white shadow-lg' : 'hover:bg-blue-800 text-blue-100' }}">
                             <i class="fas fa-boxes w-5"></i>
                             <span>Products</span>
                         </a>
