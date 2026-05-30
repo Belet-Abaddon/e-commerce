@@ -74,7 +74,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/sales', [AdminReportController::class, 'sales'])->name('sales');
         Route::get('/products', [AdminReportController::class, 'products'])->name('products');
         Route::get('/customers', [AdminReportController::class, 'customers'])->name('customers');
-        Route::get('/revenue', [AdminReportController::class, 'revenue'])->name('revenue');
         Route::get('/inventory', [AdminReportController::class, 'inventory'])->name('inventory');
         Route::get('/deliveries', [AdminReportController::class, 'deliveries'])->name('deliveries');
     });

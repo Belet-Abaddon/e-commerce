@@ -257,13 +257,6 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.reports.revenue') }}"
-                                    class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
-                                    <i class="fas fa-dollar-sign w-4"></i>
-                                    <span>Revenue Report</span>
-                                </a>
-                            </li>
-                            <li>
                                 <a href="{{ route('admin.reports.inventory') }}"
                                     class="flex items-center space-x-3 px-4 py-2 rounded-lg text-sm hover:bg-blue-800 text-blue-100 transition-all duration-200">
                                     <i class="fas fa-warehouse w-4"></i>
